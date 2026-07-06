@@ -8,21 +8,19 @@
 ```mermaid
 C4Context
     title Contexto del Sistema — Plataforma de Pronósticos Deportivos
-
     Person(visitante, "Visitante", "Usuario no registrado que desea acceder a la plataforma.")
-    Person(usuario, "Usuario Registrado", "Realiza pronósticos, consulta calendario, historial y ranking.")
-    Person(admin, "Administrador", "Gestiona Grandes Premios, pilotos, escuderías y resultados oficiales.")
-
-    System(plataforma, "Plataforma de Pronósticos Deportivos", "Aplicación web que permite realizar pronósticos de carreras de Fórmula 1 basados en estadísticas históricas.")
-
+    Person(usuario, "Usuario Registrado", "Consulta pronósticos, calendario, historial y ranking, y gestiona su suscripción.")
+    Person(admin, "Administrador", "Gestiona Grandes Premios, pilotos, escuderías, resultados oficiales y suscripciones de usuarios.")
+    System(plataforma, "Plataforma de Pronósticos Deportivos", "Aplicación web que genera y muestra pronósticos de carreras de Fórmula 1 basados en estadísticas históricas, con modelo freemium de suscripción.")
     System_Ext(f1api, "API de Datos F1", "Fuente externa de datos sobre pilotos, escuderías, calendarios y resultados oficiales.")
-    System_Ext(email, "Servicio de Email", "Envío de correos para recuperación de contraseña y notificaciones.")
-
+    System_Ext(email, "Servicio de Email", "Envío de correos para recuperación de contraseña, notificaciones y confirmaciones de suscripción.")
+    System_Ext(pasarela, "Pasarela de Pago", "Servicio externo (ej. Stripe/PayPal) que procesa el pago de la suscripción premium.")
     Rel(visitante, plataforma, "Se registra e inicia sesión")
-    Rel(usuario, plataforma, "Realiza pronósticos, consulta calendario, historial y ranking", "HTTPS")
-    Rel(admin, plataforma, "Gestiona datos del sistema y resultados oficiales", "HTTPS")
+    Rel(usuario, plataforma, "Consulta pronósticos, calendario, historial, ranking y gestiona su suscripción", "HTTPS")
+    Rel(admin, plataforma, "Gestiona datos del sistema, resultados oficiales y suscripciones de usuarios", "HTTPS")
     Rel(plataforma, f1api, "Consume datos de pilotos, escuderías y resultados", "REST/JSON")
-    Rel(plataforma, email, "Envía correos de recuperación y confirmación", "SMTP")
+    Rel(plataforma, email, "Envía correos de recuperación, notificaciones y confirmación de suscripción", "SMTP")
+    Rel(plataforma, pasarela, "Procesa el pago de la suscripción premium", "REST/JSON")
 ```
 
 ---
@@ -32,38 +30,28 @@ C4Context
 ```mermaid
 C4Container
     title Contenedores del Sistema — Plataforma de Pronósticos Deportivos
-
-    Person(usuario, "Usuario Registrado", "Realiza pronósticos desde el navegador.")
-    Person(admin, "Administrador", "Gestiona el sistema.")
-
+    Person(usuario, "Usuario Registrado", "Consulta pronósticos y gestiona su suscripción desde el navegador.")
+    Person(admin, "Administrador", "Gestiona el sistema y las suscripciones.")
     System_Boundary(plataforma, "Plataforma de Pronósticos Deportivos") {
-
-        Container(webapp, "Aplicación Web", "React + Vite (TypeScript)", "Interfaz principal para usuarios: calendario, pronósticos, historial y ranking. Organizada por features alineadas a las épicas EP-01 a EP-07.")
-
-        Container(adminpanel, "Panel de Administración", "React (SPA)", "Gestión de GPs, pilotos, escuderías, resultados oficiales y apertura/cierre de pronósticos. Corresponde a EP-08.")
-
-        Container(api, "API Backend", "FastAPI (Python)", "Lógica de negocio: autenticación, pronósticos, puntuación y rankings. Organizada en módulos por épica (modules/auth, modules/pronosticos, etc.). Expone endpoints REST.")
-
-        Container(db, "Base de Datos", "PostgreSQL", "Almacena usuarios, pronósticos, resultados, pilotos y escuderías.")
-
-        Container(cache, "Caché", "Redis", "Almacena sesiones activas y datos de clasificación frecuentes.")
-
+        Container(webapp, "Aplicación Web", "React + Vite (TypeScript)", "Interfaz principal para usuarios: calendario, consulta de pronósticos, historial, ranking y gestión de suscripción. Organizada por features alineadas a las épicas EP-01 a EP-07.")
+        Container(adminpanel, "Panel de Administración", "React (SPA)", "Gestión de GPs, pilotos, escuderías, resultados oficiales y administración de suscripciones de usuarios. Corresponde a EP-06.")
+        Container(api, "API Backend", "FastAPI (Python)", "Lógica de negocio: autenticación, generación de pronósticos, puntuación, rankings y control de suscripciones/límites de uso. Organizada en módulos por épica (modules/auth, modules/pronosticos, modules/suscripciones, etc.). Expone endpoints REST.")
+        Container(db, "Base de Datos", "PostgreSQL", "Almacena usuarios, pronósticos, resultados, pilotos, escuderías y suscripciones.")
+        Container(cache, "Caché", "Redis", "Almacena sesiones activas, datos de clasificación frecuentes y el conteo de consultas gratuitas por usuario.")
         Container(auth, "Servicio de Autenticación", "JWT (python-jose)", "Gestiona tokens de acceso y flujo de recuperación de contraseña.")
     }
-
     System_Ext(f1api, "API de Datos F1", "Datos externos de Fórmula 1.")
     System_Ext(email, "Servicio de Email", "Envío de notificaciones.")
-
+    System_Ext(pasarela, "Pasarela de Pago", "Procesa el pago de la suscripción premium (ej. Stripe/PayPal).")
     Rel(usuario, webapp, "Usa", "HTTPS")
     Rel(admin, adminpanel, "Administra", "HTTPS")
-
     Rel(webapp, api, "Llamadas a la API", "REST/JSON")
     Rel(adminpanel, api, "Llamadas a la API", "REST/JSON")
-
     Rel(api, db, "Lee y escribe datos", "SQL / SQLAlchemy")
-    Rel(api, cache, "Lee y escribe sesiones/clasificación", "Redis Protocol")
+    Rel(api, cache, "Lee y escribe sesiones/clasificación/límites de uso", "Redis Protocol")
     Rel(api, auth, "Valida y genera tokens JWT")
     Rel(api, f1api, "Obtiene datos de pilotos y resultados", "REST/JSON")
+    Rel(api, pasarela, "Procesa el pago de la suscripción", "REST/JSON")
     Rel(auth, email, "Solicita envío de correo", "SMTP")
 ```
 
