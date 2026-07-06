@@ -256,3 +256,146 @@ proyecto_f1_frontend/
 | **Base de Datos** | Persistencia de usuarios, pronósticos, resultados y estadísticas (PostgreSQL)    |
 | **Caché (Redis)** | Sesiones JWT y clasificaciones de alta demanda                                   |
 | **Auth Service**  | Emisión/validación de JWT y flujo de recuperación de contraseña (python-jose)    |
+
+---
+
+### Modelo de dominio
+
+```mermaid
+ 
+classDiagram
+    direction TB
+
+    class Usuario {
+        <<Abstract>>
+        +UUID id
+        +String nombre
+        +String correo
+        +String passwordHash
+        +iniciarSesion()
+        +cerrarSesion()
+    }
+
+    class UsuarioRegistrado {
+        +int puntuacionTotal
+        +int cantidadAciertos
+        +int cantidadFallos
+        +actualizarPerfil()
+        +seleccionarPilotoFavorito(Piloto piloto)
+        +seleccionarEscuderiaFavorita(Escuderia escuderia)
+        +verCalendario(CalendarioCampeonato calendario)
+        +consultarDetallesGranPremio(GranPremio gp)
+        +visualizarResultadosOficiales(GranPremio gp)
+        +consultarClasificacionCampeonato(TablaClasificacion tabla)
+        +realizarPronostico(GranPremio gp)
+        +visualizarHistorialPronosticos()
+    }
+
+    class Administrador {
+        +gestionarGranPremio(GranPremio gp, String accion)
+        +gestionarPiloto(Piloto piloto, String accion)
+        +gestionarEscuderia(Escuderia escuderia, String accion)
+        +registrarResultadosOficiales(GranPremio gp, ResultadoOficial resultado)
+        +controlarPeriodoParticipacion(GranPremio gp, String estado)
+    }
+
+    class PaseDeTemporada {
+        +UUID id
+        +Date fechaPago
+        +Date fechaExpiracion
+        +boolean estaActivo
+        +verificarVigencia()
+        +procesarPagoStripe()
+    }
+
+    class CalendarioCampeonato {
+        +UUID id
+        +int anioTemporada
+        +List~GranPremio~ listaGPs
+        +obtenerGPsCronologicos()
+    }
+
+    class GranPremio {
+        +UUID id
+        +String nombre
+        +String circuito
+        +String pais
+        +Date fecha
+        +String estadoEvento
+        +boolean pronosticosHabilitados
+        +actualizarEstado()
+    }
+
+    class Pronostico {
+        +UUID id
+        +Date fechaRegistro
+        +String estadoPronostico
+        +validarPeriodo()
+        +DarPuntaje(ResultadoOficial resultado)
+    }
+
+    class ResultadoOficial {
+        +UUID id
+        +Date fechaRegistro
+        +evaluarPronosticosAsociados()
+    }
+
+    class TablaClasificacion {
+        +UUID id
+        +Date ultimaActualizacion
+        +generarTablaPilotos()
+        +generarTablaConstructores()
+    }
+
+    class Piloto {
+        +UUID id
+        +String nombre
+        +String nacionalidad
+        +int puntosCampeonato
+        +actualizarPuntos(int puntos)
+    }
+
+    class Escuderia {
+        +UUID id
+        +String nombre
+        +int puntosConstructores
+        +actualizarPuntos(int puntos)
+    }
+
+    %% Jerarquía de Roles (Herencia)
+    Usuario <|-- UsuarioRegistrado
+    Usuario <|-- Administrador
+
+    %% Relaciones de Usuario Registrado (Escritura y Consulta)
+    UsuarioRegistrado "1" --> "0..1" PaseDeTemporada : adquiere
+    UsuarioRegistrado "1" --> "0..*" Pronostico : visualiza
+    UsuarioRegistrado "1" --> "0..1" Piloto : prefiere
+    UsuarioRegistrado "1" --> "0..1" Escuderia : prefiere
+
+    %% Relaciones del Administrador (Mantenimiento de Estado)
+    Administrador "1" --> "0..*" GranPremio : gestiona
+    Administrador "1" --> "0..*" Piloto : gestiona
+    Administrador "1" --> "0..*" Escuderia : gestiona
+    Administrador "1" --> "0..*" ResultadoOficial : publica
+
+    %% Estructura del Calendario y Carreras
+    CalendarioCampeonato "1" *-- "0..*" GranPremio : contiene
+    GranPremio "1" *-- "0..1" ResultadoOficial : finaliza con
+    GranPremio "1" --> "0..*" Pronostico : recibe
+
+    %% Relaciones con Tablas de Posiciones
+    TablaClasificacion "1" --> "0..*" Piloto : ordena
+    TablaClasificacion "1" --> "0..*" Escuderia : ordena
+    Escuderia "1" o-- "1..*" Piloto : posee
+
+    %% Dependencias de Datos para Predicción vs Realidad
+    Pronostico "1" --> "1" Piloto : prediceGanador
+    Pronostico "1" --> "1" Piloto : predicePole
+    Pronostico "1" --> "3" Piloto : predicePodio
+    Pronostico "1" --> "1" Piloto : prediceVueltaRapida
+
+    ResultadoOficial "1" --> "1" Piloto : ganadorReal
+    ResultadoOficial "1" --> "1" Piloto : poleReal
+    ResultadoOficial "1" --> "3" Piloto : podioReal
+    ResultadoOficial "1" --> "1" Piloto : vueltaRapidaReal
+    }
