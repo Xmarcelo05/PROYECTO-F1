@@ -397,6 +397,5 @@ classDiagram
     ResultadoOficial "1" --> "1" Piloto : poleReal
     ResultadoOficial "1" --> "3" Piloto : podioReal
     ResultadoOficial "1" --> "1" Piloto : vueltaRapidaReal
-    }
 
 ```
