@@ -262,7 +262,6 @@ proyecto_f1_frontend/
 ### Modelo de dominio
 
 ```mermaid
- 
 classDiagram
     direction TB
 
@@ -399,3 +398,5 @@ classDiagram
     ResultadoOficial "1" --> "3" Piloto : podioReal
     ResultadoOficial "1" --> "1" Piloto : vueltaRapidaReal
     }
+
+```
