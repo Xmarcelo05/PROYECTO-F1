@@ -10,6 +10,7 @@ from app.modules.pronosticos import router as pronosticos_router
 from app.modules.resultados import router as resultados_router
 from app.modules.acceso import router as acceso_router
 from app.modules.admin import router as admin_router
+from app.modules.predicciones import router as predicciones_router
 
 app = FastAPI(
     title="Pronósticos Deportivos F1 - API",
@@ -35,6 +36,7 @@ app.include_router(pronosticos_router.router)
 app.include_router(resultados_router.router)
 app.include_router(acceso_router.router)
 app.include_router(admin_router.router)
+app.include_router(predicciones_router.router)
 
 
 @app.get("/", tags=["Salud"])

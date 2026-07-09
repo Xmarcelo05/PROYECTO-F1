@@ -8,3 +8,4 @@ export type { ResultadoOficial } from './resultadoOficial';
 export type { ResultadoPosicion } from './resultadoPosicion';
 export type { PaseTemporada, EstadoPase } from './paseTemporada';
 export type { Pronostico } from './pronostico';
+export type { PrediccionGP, PilotoProbabilidad, NivelConfianza } from './prediccion';

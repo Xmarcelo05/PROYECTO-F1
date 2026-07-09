@@ -7,7 +7,7 @@ import { getErrorMessage } from '../../../core/api/apiError';
 import Card from '../../../shared/components/Card';
 import Loader from '../../../shared/components/Loader';
 
-const ETIQUETA_CONFIANZA: Record<PrediccionGP['nivelConfianza'], string> = {
+const ETIQUETA_CONFIANZA: Record<PrediccionGP['nivel_confianza'], string> = {
   bajo: 'Confianza baja',
   medio: 'Confianza media',
   alto: 'Confianza alta',
@@ -39,7 +39,7 @@ export default function Predicciones() {
     setCargandoPrediccion(true);
     setError(null);
 
-    obtenerPrediccion(gp.id, gp.temporada)
+    obtenerPrediccion(gp.id)
       .then((data) => {
         if (!cancelado) setPrediccion(data);
       })
@@ -63,9 +63,8 @@ export default function Predicciones() {
       </div>
 
       <div className="form-error" style={{ background: 'transparent', color: 'var(--gray-300)' }}>
-        ⚠️ Estas predicciones son una <strong>simulación</strong> generada en el cliente a partir de la
-        clasificación actual de pilotos. Todavía no provienen de un modelo de Machine Learning; esta
-        pantalla está preparada para conectarse a un servicio real de IA sin cambios visibles.
+        ⚠️ Estas predicciones se calculan con un algoritmo estadístico básico (clasificación
+        actual, historial en el circuito y forma reciente), no con un modelo de Machine Learning.
       </div>
 
       {cargandoGps && <Loader mensaje="Cargando calendario..." />}
@@ -88,18 +87,18 @@ export default function Predicciones() {
       )}
 
       {error && <p className="form-error">{error}</p>}
-      {cargandoPrediccion && <Loader mensaje="Generando predicción simulada..." />}
+      {cargandoPrediccion && <Loader mensaje="Generando predicción..." />}
 
       {prediccion && !cargandoPrediccion && (
         <div className="stack">
           <div className="flex-between">
             <h2 style={{ margin: 0 }}>Podio probable</h2>
-            <span className="badge badge-en_curso">{ETIQUETA_CONFIANZA[prediccion.nivelConfianza]}</span>
+            <span className="badge badge-en_curso">{ETIQUETA_CONFIANZA[prediccion.nivel_confianza]}</span>
           </div>
 
           <div className="podio">
-            {prediccion.podioProbable.map((p, index) => (
-              <div key={p.pilotoId} className={`podio__puesto podio__puesto--${index + 1}`}>
+            {prediccion.podio_probable.map((p, index) => (
+              <div key={p.piloto_id} className={`podio__puesto podio__puesto--${index + 1}`}>
                 <div className="podio__medalla" aria-hidden="true">
                   {index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}
                 </div>
@@ -112,9 +111,9 @@ export default function Predicciones() {
 
           <Card>
             <h3>Ganador probable</h3>
-            <p style={{ fontSize: '1.1rem', fontWeight: 700 }}>{prediccion.ganadorProbable.nombre}</p>
+            <p style={{ fontSize: '1.1rem', fontWeight: 700 }}>{prediccion.ganador_probable.nombre}</p>
             <p className="text-muted">
-              {prediccion.ganadorProbable.escuderia ?? '—'} · {prediccion.ganadorProbable.probabilidad}%
+              {prediccion.ganador_probable.escuderia ?? '—'} · {prediccion.ganador_probable.probabilidad}%
               de probabilidad estimada
             </p>
           </Card>
@@ -123,7 +122,7 @@ export default function Predicciones() {
             <h3>Probabilidades estimadas</h3>
             <div className="stack">
               {prediccion.probabilidades.slice(0, 8).map((p) => (
-                <div key={p.pilotoId}>
+                <div key={p.piloto_id}>
                   <div className="flex-between">
                     <span>{p.nombre}</span>
                     <span className="text-muted">{p.probabilidad}%</span>
