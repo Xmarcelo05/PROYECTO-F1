@@ -1,120 +1,96 @@
-import { useEffect, useState } from 'react';
-import { clasificacionPilotos, listarPilotos } from '../services/competenciaService';
-import type { PilotoConEscuderia } from '../services/competenciaService';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import type { TheSportsDbPlayer } from '../../../models/theSportsDb';
+import { buscarPilotoF1 } from '../../thesportsdb/services/theSportsDbService';
 import { getErrorMessage } from '../../../core/api/apiError';
 import Loader from '../../../shared/components/Loader';
 import Button from '../../../shared/components/Button';
-
-type Vista = 'listado' | 'clasificacion';
-
-const TEMPORADA_ACTUAL = new Date().getFullYear();
+import Card from '../../../shared/components/Card';
 
 export default function Pilotos() {
-  const [vista, setVista] = useState<Vista>('clasificacion');
-  const [temporada, setTemporada] = useState<number>(TEMPORADA_ACTUAL);
-  const [pilotos, setPilotos] = useState<PilotoConEscuderia[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const [busquedaPiloto, setBusquedaPiloto] = useState('');
+  const [resultados, setResultados] = useState<TheSportsDbPlayer[]>([]);
+  const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [buscado, setBuscado] = useState(false);
 
-  useEffect(() => {
-    let cancelado = false;
+  const buscarPilotos = async () => {
+    if (!busquedaPiloto.trim()) return;
     setCargando(true);
     setError(null);
+    setBuscado(true);
 
-    const promesa = vista === 'clasificacion' ? clasificacionPilotos(temporada) : listarPilotos(temporada);
-
-    promesa
-      .then((data) => {
-        if (!cancelado) setPilotos(data);
-      })
-      .catch((err: unknown) => {
-        if (!cancelado) setError(getErrorMessage(err, 'No se pudo cargar los pilotos.'));
-      })
-      .finally(() => {
-        if (!cancelado) setCargando(false);
-      });
-
-    return () => {
-      cancelado = true;
-    };
-  }, [vista, temporada]);
+    try {
+      const data = await buscarPilotoF1(busquedaPiloto);
+      setResultados(data);
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'No se pudo buscar el piloto.'));
+    } finally {
+      setCargando(false);
+    }
+  };
 
   return (
     <div className="stack">
-      <div className="page-header flex-between">
-        <div>
-          <h1>Pilotos</h1>
-          <p>Listado y clasificación del campeonato de pilotos.</p>
-        </div>
-        <div className="form-group" style={{ minWidth: 140 }}>
-          <label htmlFor="temporada">Temporada</label>
-          <input
-            id="temporada"
-            type="number"
-            value={temporada}
-            onChange={(e) => setTemporada(Number(e.target.value))}
-          />
-        </div>
+      <div className="page-header">
+        <h1>Pilotos</h1>
+        <p>Busca pilotos de Fórmula 1 desde TheSportsDB.</p>
       </div>
 
-      <div className="flex-between">
-        <Button
-          variante={vista === 'clasificacion' ? 'primary' : 'secondary'}
-          tamano="sm"
-          onClick={() => setVista('clasificacion')}
-        >
-          Clasificación
-        </Button>
-        <Button
-          variante={vista === 'listado' ? 'primary' : 'secondary'}
-          tamano="sm"
-          onClick={() => setVista('listado')}
-        >
-          Listado completo
+      <div className="flex-between" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
+        <input
+          type="search"
+          placeholder="Buscar piloto (ej. Max Verstappen)"
+          value={busquedaPiloto}
+          onChange={(e) => setBusquedaPiloto(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && void buscarPilotos()}
+          style={{ flex: 1, minWidth: 220 }}
+        />
+        <Button variante="secondary" tamano="sm" onClick={() => void buscarPilotos()}>
+          Buscar
         </Button>
       </div>
 
-      {cargando && <Loader mensaje="Cargando pilotos..." />}
+      {cargando && <Loader mensaje="Buscando pilotos..." />}
       {error && <p className="form-error">{error}</p>}
 
-      {!cargando && !error && pilotos.length === 0 && (
-        <div className="empty-state">No hay pilotos registrados para esta temporada.</div>
+      {!cargando && !error && buscado && resultados.length === 0 && (
+        <div className="empty-state">
+          No se encontraron pilotos. Prueba con otro nombre o consulta los equipos en{' '}
+          <Link to="/equipos">Equipos</Link>.
+        </div>
       )}
 
-      {!cargando && !error && pilotos.length > 0 && (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                {vista === 'clasificacion' && <th>#</th>}
-                <th>Piloto</th>
-                <th>Número</th>
-                <th>Nacionalidad</th>
-                <th>Escudería</th>
-                <th>Puntos</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pilotos.map((piloto, index) => (
-                <tr key={piloto.id}>
-                  {vista === 'clasificacion' && <td>{index + 1}</td>}
-                  <td>{piloto.nombre}</td>
-                  <td>{piloto.numero ?? '—'}</td>
-                  <td>{piloto.nacionalidad ?? '—'}</td>
-                  <td>
-                    {piloto.escuderia ? (
-                      <span style={{ color: piloto.escuderia.color ?? undefined }}>
-                        {piloto.escuderia.nombre}
-                      </span>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                  <td>{piloto.puntos_temporada}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {!cargando && !error && !buscado && (
+        <div className="empty-state">
+          Busca un piloto por nombre o consulta la plantilla en la página de Equipos.
+        </div>
+      )}
+
+      {!cargando && !error && resultados.length > 0 && (
+        <div className="grid grid-2">
+          {resultados.map((piloto) => (
+            <Card key={piloto.idPlayer} className="f1-api-piloto">
+              <div className="f1-api-piloto__contenido">
+                {(piloto.strThumb || piloto.strCutout) && (
+                  <img
+                    src={piloto.strCutout ?? piloto.strThumb ?? ''}
+                    alt={piloto.strPlayer}
+                    className="f1-api-piloto__foto"
+                  />
+                )}
+                <div>
+                  <h3>{piloto.strPlayer}</h3>
+                  <p>{piloto.strTeam ?? 'Sin equipo'}</p>
+                  <p>
+                    {piloto.strNationality ?? '—'}
+                    {piloto.strNumber ? ` · #${piloto.strNumber}` : ''}
+                  </p>
+                  {piloto.dateBorn && <p>Nacimiento: {piloto.dateBorn}</p>}
+                </div>
+              </div>
+            </Card>
+          ))}
         </div>
       )}
     </div>

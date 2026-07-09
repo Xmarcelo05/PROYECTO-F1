@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { listarCalendario } from '../services/calendarioService';
-import type { GranPremioCalendario } from '../services/calendarioService';
+import type { TheSportsDbEvent } from '../../../models/theSportsDb';
+import { filtrarGrandesPremios, listarEventosTemporadaF1 } from '../../thesportsdb/services/theSportsDbService';
 import { getErrorMessage } from '../../../core/api/apiError';
-import Card from '../../../shared/components/Card';
 import Loader from '../../../shared/components/Loader';
-import EstadoBadge from '../../../shared/components/EstadoBadge';
 
-function formatearFecha(fechaIso: string): string {
-  return new Date(fechaIso).toLocaleDateString('es', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
+const TEMPORADA_ACTUAL = new Date().getFullYear();
+
+function formatearFecha(fecha: string, hora?: string | null): string {
+  const opciones: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+  const texto = new Date(fecha).toLocaleDateString('es-ES', opciones);
+  return hora ? `${texto} · ${hora.slice(0, 5)}` : texto;
+}
+
+function estadoEvento(estado: string | null): string {
+  if (estado === 'FT') return 'Finalizado';
+  if (estado === 'NS') return 'Próximo';
+  return estado ?? '—';
 }
 
 export default function ListaGPs() {
-  const [gps, setGps] = useState<GranPremioCalendario[]>([]);
-  const [temporada, setTemporada] = useState<string>('');
+  const [eventos, setEventos] = useState<TheSportsDbEvent[]>([]);
+  const [temporada, setTemporada] = useState(TEMPORADA_ACTUAL);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,10 +29,9 @@ export default function ListaGPs() {
     setCargando(true);
     setError(null);
 
-    const filtro = temporada ? Number(temporada) : undefined;
-    listarCalendario(filtro)
+    listarEventosTemporadaF1(temporada)
       .then((data) => {
-        if (!cancelado) setGps(data);
+        if (!cancelado) setEventos(filtrarGrandesPremios(data));
       })
       .catch((err: unknown) => {
         if (!cancelado) setError(getErrorMessage(err, 'No se pudo cargar el calendario.'));
@@ -48,16 +50,15 @@ export default function ListaGPs() {
       <div className="page-header flex-between">
         <div>
           <h1>Calendario</h1>
-          <p>Grandes Premios de la temporada.</p>
+          <p>Grandes Premios de la temporada desde TheSportsDB.</p>
         </div>
         <div className="form-group" style={{ minWidth: 160 }}>
           <label htmlFor="temporada">Temporada</label>
           <input
             id="temporada"
             type="number"
-            placeholder="ej. 2026"
             value={temporada}
-            onChange={(e) => setTemporada(e.target.value)}
+            onChange={(e) => setTemporada(Number(e.target.value))}
           />
         </div>
       </div>
@@ -65,26 +66,36 @@ export default function ListaGPs() {
       {cargando && <Loader mensaje="Cargando calendario..." />}
       {error && <p className="form-error">{error}</p>}
 
-      {!cargando && !error && gps.length === 0 && (
-        <div className="empty-state">No hay Grandes Premios para mostrar.</div>
+      {!cargando && !error && eventos.length === 0 && (
+        <div className="empty-state">No hay Grandes Premios para esta temporada.</div>
       )}
 
-      {!cargando && !error && gps.length > 0 && (
-        <div className="grid grid-2">
-          {gps.map((gp) => (
-            <Link key={gp.id} to={`/calendario/${gp.id}`} style={{ textDecoration: 'none' }}>
-              <Card>
-                <div className="flex-between">
-                  <h3>{gp.nombre}</h3>
-                  <EstadoBadge estado={gp.estado} />
-                </div>
-                <p>
-                  Ronda {gp.ronda} · {gp.circuito}, {gp.pais}
-                </p>
-                <p className="text-muted">Carrera: {formatearFecha(gp.fecha_carrera)}</p>
-              </Card>
-            </Link>
-          ))}
+      {!cargando && !error && eventos.length > 0 && (
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ronda</th>
+                <th>Gran Premio</th>
+                <th>Circuito</th>
+                <th>País</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {eventos.map((evento) => (
+                <tr key={evento.idEvent}>
+                  <td>{evento.intRound ?? '—'}</td>
+                  <td>{evento.strEvent}</td>
+                  <td>{evento.strVenue ?? '—'}</td>
+                  <td>{evento.strCountry ?? '—'}</td>
+                  <td>{formatearFecha(evento.dateEvent, evento.strTime)}</td>
+                  <td>{estadoEvento(evento.strStatus)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
