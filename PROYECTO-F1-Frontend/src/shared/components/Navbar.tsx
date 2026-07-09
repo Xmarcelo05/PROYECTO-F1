@@ -22,7 +22,7 @@ export default function Navbar() {
     <nav className="navbar">
       <NavLink to="/" className="navbar__brand">
         <span className="navbar__logo">F1</span>
-        Pronósticos F1
+        F1Cast
       </NavLink>
 
       <div className="navbar__links">
