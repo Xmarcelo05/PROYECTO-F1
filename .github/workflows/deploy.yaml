@@ -42,6 +42,10 @@ jobs:
           gcloud auth list
           gcloud config get-value account
 
+      - name: 'Check token identity'
+        run: |
+          curl -s "https://oauth2.googleapis.com/tokeninfo?access_token=${{ steps.auth.outputs.auth_token }}"
+
       - name: 'Build and Push Container'
         run: |-
            DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}"
