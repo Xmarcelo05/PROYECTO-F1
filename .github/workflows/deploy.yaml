@@ -37,6 +37,11 @@ jobs:
           password: '${{ steps.auth.outputs.auth_token }}'
           registry: '${{ env.REGION }}-docker.pkg.dev'
 
+      - name: 'Debug identity'
+        run: |
+          gcloud auth list
+          gcloud config get-value account
+
       - name: 'Build and Push Container'
         run: |-
            DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}"
