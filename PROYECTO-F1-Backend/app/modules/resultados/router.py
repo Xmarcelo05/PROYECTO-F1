@@ -3,9 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.core.security import get_current_user
 from app.core.exceptions import NoEncontrado
-from app.modules.acceso.dependencies import verificar_acceso
 from app.modules.resultados import crud, schemas
 
 router = APIRouter(tags=["Resultados y Ranking"])
@@ -16,7 +14,6 @@ router = APIRouter(tags=["Resultados y Ranking"])
 def obtener_resultados_gp(
     gp_id: uuid.UUID,
     db: Session = Depends(get_db),
-    usuario = Depends(verificar_acceso)
 ):
     resultado = crud.obtener_resultado_gp(db, gp_id)
     if not resultado:
@@ -28,6 +25,5 @@ def obtener_resultados_gp(
 @router.get("/ranking", response_model=list[schemas.UsuarioRankingOut])
 def obtener_ranking(
     db: Session = Depends(get_db),
-    usuario = Depends(get_current_user)
 ):
     return crud.obtener_ranking_global(db)

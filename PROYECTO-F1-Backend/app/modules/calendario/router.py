@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.modules.calendario import crud, schemas
-from app.modules.acceso.dependencies import verificar_acceso
 
 router = APIRouter(prefix="/grandes-premios", tags=["Calendario"])
 
@@ -18,12 +17,11 @@ def listar_calendario(
     return crud.listar_grandes_premios(db, temporada=temporada)
 
 
-# HU-09/HU-10: detalle de un GP puntual, protegido por verificar_acceso
+# HU-09/HU-10: detalle público de un GP.
 @router.get("/{gp_id}", response_model=schemas.GranPremioDetalle)
 def obtener_detalle_gp(
     gp_id: uuid.UUID,
     db: Session = Depends(get_db),
-    usuario = Depends(verificar_acceso)
 ):
     gp = crud.obtener_gran_premio(db, gp_id)
     if not gp:

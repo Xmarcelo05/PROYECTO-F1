@@ -44,9 +44,7 @@ export interface SincronizacionTheSportsDb {
 
 export async function sincronizarTheSportsDb(temporada: number): Promise<SincronizacionTheSportsDb> {
   const { data } = await axiosClient.post<SincronizacionTheSportsDb>(
-    '/admin/sincronizaciones/thesportsdb',
-    undefined,
-    { params: { temporada } },
+    '/admin/sincronizaciones/thesportsdb', undefined, { params: { temporada } },
   );
   return data;
 }

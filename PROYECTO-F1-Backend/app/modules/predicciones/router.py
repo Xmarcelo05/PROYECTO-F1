@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.core.exceptions import NoEncontrado, SolicitudInvalida
-from app.modules.acceso.dependencies import verificar_acceso
 from app.modules.calendario.crud import obtener_gran_premio
 from app.modules.predicciones import crud, motor, schemas
 
@@ -13,12 +12,11 @@ router = APIRouter(prefix="/predicciones", tags=["Predicciones"])
 
 # Predicción algorítmica (no ML) del resultado de un GP, a partir de datos reales:
 # clasificación de pilotos/escuderías, historial en el circuito y forma reciente.
-# Protegida igual que el detalle del GP: requiere pase de temporada o GP gratis.
+# Disponible públicamente como contenido informativo.
 @router.get("/{gp_id}", response_model=schemas.PrediccionGPOut)
 def obtener_prediccion_gp(
     gp_id: uuid.UUID,
     db: Session = Depends(get_db),
-    usuario=Depends(verificar_acceso),
 ):
     gp = obtener_gran_premio(db, gp_id)
     if not gp:

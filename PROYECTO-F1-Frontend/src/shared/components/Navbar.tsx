@@ -5,6 +5,7 @@ import Button from './Button';
 const linksPublicos = [
   { to: '/calendario', label: 'Calendario' },
   { to: '/pilotos', label: 'Pilotos' },
+  { to: '/equipos', label: 'Equipos' },
   { to: '/escuderias', label: 'Escuderías' },
   { to: '/resultados', label: 'Resultados' },
 ];

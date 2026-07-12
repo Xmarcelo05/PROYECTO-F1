@@ -28,15 +28,11 @@ def sincronizar_datos_thesportsdb(
     db: Session = Depends(get_db),
     admin: Usuario = Depends(get_current_admin),
 ):
-    """Importa manualmente datos de F1 sin modificar el contenido ya administrado."""
     try:
         resumen = sincronizar_temporada(db, temporada)
     except Exception as exc:
         db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="No se pudo sincronizar con TheSportsDB. Inténtalo nuevamente.",
-        ) from exc
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="No se pudo sincronizar con TheSportsDB.") from exc
     return {"detail": "Sincronización completada.", **resumen}
 
 

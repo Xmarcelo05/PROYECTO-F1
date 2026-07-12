@@ -387,3 +387,40 @@ classDiagram
     ResultadoOficial "1" --> "1" Piloto : vueltaRapidaReal
 
 ```
+
+---
+
+## Plan de Acción: Verificación de Seguridad y KYC (Costo Cero)
+
+Para habilitar el flujo de depósitos y garantizar la autenticidad de los usuarios sin incurrir en costos elevados durante el prototipo y lanzamiento inicial, se implementará el siguiente plan con tecnologías 100% gratuitas en sus niveles iniciales:
+
+### 1. Verificación de Correo (Registro)
+* **Herramienta:** **Resend** (Plan Free — 3,000 correos/mes gratis).
+* **Propósito:** Validar que la dirección de correo proporcionada al registrarse es real antes de permitir acceso completo a la aplicación.
+* **Implementación:**
+  1. Durante el registro (`POST /auth/register`), el backend genera un código aleatorio de 6 dígitos con fecha de expiración (15 minutos) en la tabla `codigos_verificacion`.
+  2. El backend (FastAPI) envía un email con el código utilizando la API de **Resend**.
+  3. El frontend (React) muestra una pantalla de bloqueo de verificación tras el registro donde el usuario ingresa el código.
+  4. Al ingresar el código correcto, el backend cambia `correo_verificado = True` y permite el inicio de sesión ordinario.
+
+### 2. Verificación Telefónica (Perfil)
+* **Herramienta:** **Firebase Phone Auth** (Spark Plan — 10,000 SMS/mes gratis globales).
+* **Propósito:** Reemplazar el costoso e inestable AWS SNS para validar el número de teléfono del usuario antes de habilitar la opción de depósito.
+* **Implementación:**
+  1. En la página de perfil, el usuario ingresa su teléfono.
+  2. El frontend (React) utiliza la librería de Firebase Web SDK para inicializar el captcha invisible y enviar el código SMS directamente al dispositivo móvil.
+  3. Firebase se encarga de la entrega de red del SMS sin costo.
+  4. El usuario introduce el código recibido en el frontend; el frontend lo valida con Firebase y recibe un token de confirmación de éxito.
+  5. El frontend envía este token de verificación al backend (`POST /users/me/verificar-telefono`) para almacenar `telefono_verificado = True` y guardar de forma segura el número en la base de datos.
+
+### 3. Verificación de Identidad (KYC - Cédula y Selfie)
+* **Herramienta:** **Didit** (Plan Sandbox/Free — 500 verificaciones KYC/mes gratis para siempre).
+* **Propósito:** Reemplazar plataformas empresariales de pago (como Onfido o Veriff) para autenticar la identidad del usuario mediante fotos de su cédula (frente y dorso) y una selfie biométrica (liveness test).
+* **Implementación:**
+  1. Si el usuario intenta acceder a la sección de depósito y no tiene su identidad verificada, se le redirige automáticamente a su Perfil con un aviso de advertencia.
+  2. El frontend solicita al backend un token de sesión de verificación (`POST /users/me/kyc/session`).
+  3. El backend (FastAPI) realiza una petición autenticada a la API de **Didit** para iniciar una sesión y se la entrega al frontend.
+  4. El frontend renderiza el SDK de Didit (`@didit-protocol/sdk-web`) para guiar al usuario en la captura de su cédula y su rostro.
+  5. Una vez completado en la UI, Didit procesa la validez del documento y la foto en segundo plano y notifica el veredicto final mediante un Webhook (`POST /webhooks/didit`) hacia nuestro backend, el cual actualiza el estado en la base de datos a `kyc_estado = 'aprobado'`.
+  6. Una vez aprobados el teléfono y el KYC de Didit, el usuario puede acceder a la sección de depósitos.
+

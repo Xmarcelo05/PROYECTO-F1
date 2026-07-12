@@ -8,7 +8,7 @@ from app.core.security import get_current_user
 from app.core.exceptions import NoEncontrado, SolicitudInvalida, SinPermisos
 from app.modules.auth.models import Usuario
 from app.modules.calendario.models import GranPremio
-from app.modules.acceso.dependencies import verificar_acceso
+from app.modules.acceso.dependencies import verificar_pase_pronosticos
 from app.modules.pronosticos import crud, schemas, models
 
 router = APIRouter(prefix="/pronosticos", tags=["Pronósticos"])
@@ -36,22 +36,19 @@ def validar_unicidad_podio(p1: uuid.UUID | None, p2: uuid.UUID | None, p3: uuid.
 @router.post("", response_model=schemas.PronosticoOut, status_code=status.HTTP_201_CREATED)
 def crear_mi_pronostico(
     datos: schemas.PronosticoCreate,
-    usuario: Usuario = Depends(get_current_user),
+    usuario: Usuario = Depends(verificar_pase_pronosticos),
     db: Session = Depends(get_db)
 ):
-    # 1. Verificar acceso al GP (Pase o GP Gratis)
-    verificar_acceso(datos.gran_premio_id, usuario, db)
-
-    # 2. Obtener GP y verificar plazo
+    # 1. Obtener GP y verificar plazo
     gp = db.query(GranPremio).filter(GranPremio.id == datos.gran_premio_id).first()
     if not gp:
         raise NoEncontrado("Gran Premio no encontrado")
     validar_plazo_gp(gp)
 
-    # 3. Validar unicidad de podio
+    # 2. Validar unicidad de podio
     validar_unicidad_podio(datos.piloto_p1_id, datos.piloto_p2_id, datos.piloto_p3_id)
 
-    # 4. Verificar si ya existe un pronóstico
+    # 3. Verificar si ya existe un pronóstico
     existente = crud.obtener_pronostico_usuario_gp(db, usuario.id, datos.gran_premio_id)
     if existente:
         raise SolicitudInvalida("Ya has creado un pronóstico para este Gran Premio. Usa PUT para editarlo.")
@@ -62,12 +59,9 @@ def crear_mi_pronostico(
 @router.get("/gp/{gp_id}", response_model=schemas.PronosticoOut)
 def obtener_pronostico_de_gp(
     gp_id: uuid.UUID,
-    usuario: Usuario = Depends(get_current_user),
+    usuario: Usuario = Depends(verificar_pase_pronosticos),
     db: Session = Depends(get_db)
 ):
-    # Verificar acceso al GP
-    verificar_acceso(gp_id, usuario, db)
-
     pronostico = crud.obtener_pronostico_usuario_gp(db, usuario.id, gp_id)
     if not pronostico:
         raise NoEncontrado("No tienes ningún pronóstico creado para este Gran Premio.")
@@ -78,7 +72,7 @@ def obtener_pronostico_de_gp(
 def modificar_mi_pronostico(
     pronostico_id: uuid.UUID,
     datos: schemas.PronosticoUpdate,
-    usuario: Usuario = Depends(get_current_user),
+    usuario: Usuario = Depends(verificar_pase_pronosticos),
     db: Session = Depends(get_db)
 ):
     pronostico = crud.obtener_pronostico(db, pronostico_id)
@@ -107,7 +101,7 @@ def modificar_mi_pronostico(
 @router.post("/{pronostico_id}/confirmar", response_model=schemas.PronosticoOut)
 def confirmar_mi_pronostico(
     pronostico_id: uuid.UUID,
-    usuario: Usuario = Depends(get_current_user),
+    usuario: Usuario = Depends(verificar_pase_pronosticos),
     db: Session = Depends(get_db)
 ):
     pronostico = crud.obtener_pronostico(db, pronostico_id)
