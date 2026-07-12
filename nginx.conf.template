@@ -8,7 +8,6 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    # Opcional: cache agresivo para assets con hash (Vite los genera así)
     location ~* \.(js|css|png|jpg|jpeg|gif|svg|woff2?)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
