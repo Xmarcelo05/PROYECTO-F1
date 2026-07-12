@@ -36,11 +36,11 @@ function App() {
         <Route path="/escuderias" element={<Escuderias />} />
         <Route path="/resultados" element={<ResultadosIndex />} />
         <Route path="/resultados/clasificacion" element={<ClasificacionCampeonato />} />
+        <Route path="/predicciones" element={<Predicciones />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/calendario/:id" element={<DetalleGP />} />
           <Route path="/resultados/:id" element={<ResultadosGP />} />
-          <Route path="/predicciones" element={<Predicciones />} />
           <Route path="/perfil" element={<Perfil />} />
         </Route>
 

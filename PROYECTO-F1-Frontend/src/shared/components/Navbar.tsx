@@ -8,9 +8,8 @@ const linksPublicos = [
   { to: '/equipos', label: 'Equipos' },
   { to: '/escuderias', label: 'Escuderías' },
   { to: '/resultados', label: 'Resultados' },
+  { to: '/predicciones', label: 'Predicciones' },
 ];
-
-const linksPrivados = [{ to: '/predicciones', label: 'Predicciones' }];
 
 function claseLink({ isActive }: { isActive: boolean }): string {
   return `navbar__link${isActive ? ' navbar__link--active' : ''}`;
@@ -32,13 +31,6 @@ export default function Navbar() {
             {link.label}
           </NavLink>
         ))}
-
-        {usuario &&
-          linksPrivados.map((link) => (
-            <NavLink key={link.to} to={link.to} className={claseLink}>
-              {link.label}
-            </NavLink>
-          ))}
 
         {esAdmin && (
           <NavLink to="/admin" className={claseLink}>
