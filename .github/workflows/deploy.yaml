@@ -29,6 +29,11 @@ jobs:
         with:
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ env.SERVICE_ACCOUNT }}'
+          token_format: 'access_token'
+
+      - name: 'Check token identity'
+        run: |
+          curl -s -G --data-urlencode "access_token=${{ steps.auth.outputs.auth_token }}" https://oauth2.googleapis.com/tokeninfo
 
       - name: 'Docker Auth'
         uses: 'docker/login-action@v3'
@@ -37,20 +42,11 @@ jobs:
           password: '${{ steps.auth.outputs.auth_token }}'
           registry: '${{ env.REGION }}-docker.pkg.dev'
 
-      - name: 'Debug identity'
-        run: |
-          gcloud auth list
-          gcloud config get-value account
-
-      - name: 'Check token identity'
-        run: |
-          curl -s "https://oauth2.googleapis.com/tokeninfo?access_token=${{ steps.auth.outputs.auth_token }}"
-
       - name: 'Build and Push Container'
         run: |-
-           DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}"
-            docker build --tag "${DOCKER_TAG}" ./PROYECTO-F1-Frontend
-            docker push "${DOCKER_TAG}"
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}"
+          docker build --tag "${DOCKER_TAG}" ./PROYECTO-F1-Frontend
+          docker push "${DOCKER_TAG}"
 
       - id: 'deploy'
         name: 'Deploy to Cloud Run'
