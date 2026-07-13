@@ -89,6 +89,9 @@ export default function Login() {
       <p className="text-muted">
         ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
       </p>
+      <p className="text-muted">
+        ¿Olvidaste tu contraseña? <Link to="/recuperar-cuenta">Recuperar cuenta</Link>
+      </p>
     </div>
   );
 }
