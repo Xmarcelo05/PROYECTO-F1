@@ -13,7 +13,7 @@ import Escuderias from './features/competencia/pages/Escuderias';
 import ResultadosIndex from './features/resultados/pages/ResultadosIndex';
 import ResultadosGP from './features/resultados/pages/ResultadosGP';
 import ClasificacionCampeonato from './features/resultados/pages/ClasificacionCampeonato';
-import Predicciones from './features/predicciones/pages/Predicciones';
+import Pronosticos from './features/pronosticos/pages/Pronosticos';
 import AdminHome from './features/admin/pages/AdminHome';
 import GestionGPs from './features/admin/pages/GestionGPs';
 import GestionPilotos from './features/admin/pages/GestionPilotos';
@@ -36,12 +36,12 @@ function App() {
         <Route path="/escuderias" element={<Escuderias />} />
         <Route path="/resultados" element={<ResultadosIndex />} />
         <Route path="/resultados/clasificacion" element={<ClasificacionCampeonato />} />
-        <Route path="/predicciones" element={<Predicciones />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/calendario/:id" element={<DetalleGP />} />
           <Route path="/resultados/:id" element={<ResultadosGP />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/pronosticos" element={<Pronosticos />} />
         </Route>
 
         <Route element={<AdminRoute />}>

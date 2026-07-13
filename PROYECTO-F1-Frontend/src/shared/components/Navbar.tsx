@@ -8,7 +8,6 @@ const linksPublicos = [
   { to: '/equipos', label: 'Equipos' },
   { to: '/escuderias', label: 'Escuderías' },
   { to: '/resultados', label: 'Resultados' },
-  { to: '/predicciones', label: 'Predicciones' },
 ];
 
 function claseLink({ isActive }: { isActive: boolean }): string {
@@ -31,6 +30,12 @@ export default function Navbar() {
             {link.label}
           </NavLink>
         ))}
+
+        {usuario && (
+          <NavLink to="/pronosticos" className={claseLink}>
+            Pronósticos
+          </NavLink>
+        )}
 
         {esAdmin && (
           <NavLink to="/admin" className={claseLink}>

@@ -494,6 +494,26 @@ tr:last-child td {
   background: var(--gray-800);
 }
 
+.pronosticos-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 760px;
+}
+
+.pronosticos-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.pronosticos-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 @media screen and (max-width: 650px) {
   .navbar {
     flex-direction: column;
@@ -503,4 +523,146 @@ tr:last-child td {
   .podio {
     grid-template-columns: 1fr;
   }
+
+  .pronosticos-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Distribucion principal: contenido a la izquierda, navegacion vertical a la derecha. */
+.app-shell {
+  flex: 1;
+  width: min(100%, 1480px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  align-items: stretch;
+}
+
+.app-shell .app-main {
+  max-width: 1280px;
+  margin: 0;
+  padding: 2rem 2.5rem 3rem;
+}
+
+.app-shell .navbar {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.25rem;
+  padding: 1.5rem 1rem;
+  border-bottom: 0;
+  border-left: 1px solid var(--gray-700);
+}
+
+.app-shell .navbar__links,
+.app-shell .navbar__user {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+.app-shell .navbar__link {
+  padding: 0.6rem 0.75rem;
+}
+
+.app-shell .navbar__user {
+  margin-top: auto;
+}
+
+.app-shell .navbar__user .btn {
+  width: 100%;
+}
+
+/* Calendario mensual */
+.calendario-meses { display: grid; gap: 1.5rem; }
+
+.calendario-mes {
+  overflow: hidden;
+  border: 1px solid var(--gray-700);
+  border-radius: var(--radius);
+  background: var(--gray-900);
+}
+
+.calendario-mes h2 {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  text-transform: capitalize;
+  background: var(--gray-800);
+}
+
+.calendario-semana,
+.calendario-cuadricula {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.calendario-semana span {
+  padding: 0.55rem 0.3rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+}
+
+.calendario-dia {
+  min-height: 105px;
+  padding: 0.45rem;
+  border-top: 1px solid var(--gray-700);
+  border-right: 1px solid var(--gray-700);
+}
+
+.calendario-dia:nth-child(7n) { border-right: 0; }
+.calendario-dia--vacio { background: color-mix(in srgb, var(--gray-950) 45%, transparent); }
+
+.calendario-dia__numero {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--gray-500);
+  font-size: 0.8rem;
+}
+
+.calendario-evento {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.4rem;
+  border-left: 3px solid var(--f1-red);
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--f1-red) 13%, var(--gray-800));
+  font-size: 0.75rem;
+  overflow: hidden;
+}
+
+.calendario-evento span,
+.calendario-evento small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendario-evento small { color: var(--gray-300); }
+
+@media screen and (max-width: 850px) {
+  .app-shell { display: flex; flex-direction: column; }
+  .app-shell .app-main { padding: 1.5rem 1.25rem 2rem; }
+  .app-shell .navbar {
+    order: -1;
+    padding: 0.85rem 1.25rem;
+    border-left: 0;
+    border-bottom: 1px solid var(--gray-700);
+  }
+  .app-shell .navbar__links,
+  .app-shell .navbar__user { flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: 0; }
+  .app-shell .navbar__user .btn { width: auto; }
+  .calendario-dia { min-height: 82px; }
+  .calendario-evento { font-size: 0.65rem; }
+}
+
+@media screen and (max-width: 520px) {
+  .calendario-mes { overflow-x: auto; }
+  .calendario-semana, .calendario-cuadricula { min-width: 620px; }
 }

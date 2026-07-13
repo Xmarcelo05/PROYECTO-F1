@@ -9,11 +9,11 @@ import Loader from '../../../shared/components/Loader';
 
 const accesos = [
   { to: '/calendario', titulo: 'Calendario', desc: 'Grandes Premios de la temporada desde TheSportsDB.' },
-  { to: '/pilotos', titulo: 'Pilotos', desc: 'Busca y consulta pilotos de Fórmula 1.' },
-  { to: '/equipos', titulo: 'Equipos', desc: 'Escuderías y plantillas desde TheSportsDB.' },
-  { to: '/escuderias', titulo: 'Escuderías', desc: 'Listado y clasificación del campeonato de constructores.' },
+  { to: '/pilotos', titulo: 'Pilotos', desc: 'Busca y consulta pilotos de Formula 1.' },
+  { to: '/equipos', titulo: 'Equipos', desc: 'Escuderias y plantillas desde TheSportsDB.' },
+  { to: '/escuderias', titulo: 'Escuderias', desc: 'Listado y clasificacion del campeonato de constructores.' },
   { to: '/resultados', titulo: 'Resultados', desc: 'Resultados oficiales registrados por Gran Premio.' },
-  { to: '/predicciones', titulo: 'Predicciones', desc: 'Predicciones simuladas de apoyo a la decisión.' },
+  { to: '/pronosticos', titulo: 'Pronosticos', desc: 'Crea y confirma tus pronosticos para cada Gran Premio.' },
 ];
 
 export default function Home() {
@@ -24,58 +24,31 @@ export default function Home() {
 
   useEffect(() => {
     let cancelado = false;
-    setCargandoLiga(true);
-    setErrorLiga(null);
-
     obtenerLigaF1()
-      .then((data) => {
-        if (!cancelado) setLiga(data);
-      })
-      .catch((err: unknown) => {
-        if (!cancelado) setErrorLiga(getErrorMessage(err, 'No se pudo cargar la información de la liga.'));
-      })
-      .finally(() => {
-        if (!cancelado) setCargandoLiga(false);
-      });
-
-    return () => {
-      cancelado = true;
-    };
+      .then((data) => !cancelado && setLiga(data))
+      .catch((err: unknown) => !cancelado && setErrorLiga(getErrorMessage(err, 'No se pudo cargar la informacion de la liga.')))
+      .finally(() => !cancelado && setCargandoLiga(false));
+    return () => { cancelado = true; };
   }, []);
 
   return (
     <div className="stack">
       <div className="page-header">
-        <h1>Pronósticos F1</h1>
-        <p>
-          {usuario
-            ? `Bienvenido, ${usuario.nombre}. Explora la temporada y las predicciones simuladas.`
-            : 'Plataforma de apoyo a la decisión para la temporada de Fórmula 1.'}
-        </p>
+        <h1>Pronosticos F1</h1>
+        <p>{usuario ? `Bienvenido, ${usuario.nombre}. Explora la temporada y crea tus pronosticos.` : 'Plataforma para seguir la temporada de Formula 1.'}</p>
       </div>
 
-      {cargandoLiga && <Loader mensaje="Cargando información de la liga..." />}
+      {cargandoLiga && <Loader mensaje="Cargando informacion de la liga..." />}
       {errorLiga && <p className="form-error">{errorLiga}</p>}
 
       {!cargandoLiga && !errorLiga && liga && (
         <Card>
           <div className="f1-api-liga">
-            {liga.strBadge && (
-              <img src={liga.strBadge} alt={liga.strLeague} className="f1-api-liga__badge" />
-            )}
+            {liga.strBadge && <img src={liga.strBadge} alt={liga.strLeague} className="f1-api-liga__badge" />}
             <div>
               <h2>{liga.strLeague}</h2>
-              <p>
-                {liga.strSport}
-                {liga.strCountry ? ` · ${liga.strCountry}` : ''}
-                {liga.intFormedYear ? ` · Desde ${liga.intFormedYear}` : ''}
-              </p>
-              {liga.strDescriptionEN && (
-                <p style={{ marginTop: '0.75rem', whiteSpace: 'pre-line' }}>
-                  {liga.strDescriptionEN.slice(0, 600)}
-                  {liga.strDescriptionEN.length > 600 ? '…' : ''}
-                </p>
-              )}
+              <p>{liga.strSport}{liga.strCountry ? ` · ${liga.strCountry}` : ''}{liga.intFormedYear ? ` · Desde ${liga.intFormedYear}` : ''}</p>
+              {liga.strDescriptionEN && <p style={{ marginTop: '0.75rem', whiteSpace: 'pre-line' }}>{liga.strDescriptionEN.slice(0, 600)}{liga.strDescriptionEN.length > 600 ? '…' : ''}</p>}
             </div>
           </div>
         </Card>
@@ -84,10 +57,7 @@ export default function Home() {
       <div className="grid grid-2" style={{ paddingTop: '10px', paddingBottom: '10px' }}>
         {accesos.map((item) => (
           <Link key={item.to} to={item.to} style={{ textDecoration: 'none' }}>
-            <Card>
-              <h3>{item.titulo}</h3>
-              <p>{item.desc}</p>
-            </Card>
+            <Card><h3>{item.titulo}</h3><p>{item.desc}</p></Card>
           </Link>
         ))}
       </div>
