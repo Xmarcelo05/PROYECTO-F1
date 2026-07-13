@@ -56,8 +56,8 @@ export async function crearCheckoutSession(successUrl: string, cancelUrl: string
   return data;
 }
 
-export async function simularPagoExitoso(sessionId: string): Promise<{ detail: string; estado: string }> {
-  const { data } = await axiosClient.post<{ detail: string; estado: string }>(`/acceso/mock-payment-success/${sessionId}`);
+export async function confirmarPagoStripe(sessionId: string): Promise<PaseTemporadaInfo> {
+  const { data } = await axiosClient.post<PaseTemporadaInfo>(`/acceso/checkout/${sessionId}/confirmar`);
   return data;
 }
 

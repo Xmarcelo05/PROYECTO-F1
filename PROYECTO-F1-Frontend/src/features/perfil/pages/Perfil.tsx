@@ -8,7 +8,7 @@ import {
   verificarTelefono,
   iniciarKycSession,
   crearCheckoutSession,
-  simularPagoExitoso,
+  confirmarPagoStripe,
   simularWebhookKyc,
   obtenerPase
 } from '../services/perfilService';
@@ -46,7 +46,7 @@ export default function Perfil() {
     const sessionId = searchParams.get('session_id');
     if (sessionId && usuario) {
       setSuccessMsg('Procesando confirmación de pago...');
-      simularPagoExitoso(sessionId)
+      confirmarPagoStripe(sessionId)
         .then(() => {
           setSuccessMsg('¡Pago completado con éxito! Tu Pase de Temporada ahora está activo.');
           refrescarPerfil();
