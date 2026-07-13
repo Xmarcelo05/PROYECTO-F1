@@ -529,51 +529,17 @@ tr:last-child td {
   }
 }
 
-/* Distribucion principal: contenido a la izquierda, navegacion vertical a la derecha. */
+/* Distribucion principal: navbar arriba, contenido debajo. */
 .app-shell {
   flex: 1;
   width: min(100%, 1480px);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 230px;
-  align-items: stretch;
 }
 
 .app-shell .app-main {
   max-width: 1280px;
-  margin: 0;
+  margin: 0 auto;
   padding: 2rem 2.5rem 3rem;
-}
-
-.app-shell .navbar {
-  grid-column: 2;
-  grid-row: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 1.25rem;
-  padding: 1.5rem 1rem;
-  border-bottom: 0;
-  border-left: 1px solid var(--gray-700);
-}
-
-.app-shell .navbar__links,
-.app-shell .navbar__user {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.35rem;
-}
-
-.app-shell .navbar__link {
-  padding: 0.6rem 0.75rem;
-}
-
-.app-shell .navbar__user {
-  margin-top: auto;
-}
-
-.app-shell .navbar__user .btn {
-  width: 100%;
 }
 
 /* Calendario mensual */
@@ -647,17 +613,7 @@ tr:last-child td {
 .calendario-evento small { color: var(--gray-300); }
 
 @media screen and (max-width: 850px) {
-  .app-shell { display: flex; flex-direction: column; }
   .app-shell .app-main { padding: 1.5rem 1.25rem 2rem; }
-  .app-shell .navbar {
-    order: -1;
-    padding: 0.85rem 1.25rem;
-    border-left: 0;
-    border-bottom: 1px solid var(--gray-700);
-  }
-  .app-shell .navbar__links,
-  .app-shell .navbar__user { flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: 0; }
-  .app-shell .navbar__user .btn { width: auto; }
   .calendario-dia { min-height: 82px; }
   .calendario-evento { font-size: 0.65rem; }
 }
