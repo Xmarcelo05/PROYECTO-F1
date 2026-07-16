@@ -13,6 +13,8 @@ import Loader from '../../../shared/components/Loader';
 import PilotoAvatar from '../components/PilotoAvatar';
 import SeleccionarPilotoModal from '../components/SeleccionarPilotoModal';
 import { usePilotoFotos } from '../hooks/usePilotoFotos';
+import { obtenerResultadosGP } from '../../resultados/services/resultadosService';
+import type { ResultadoOficialConPosiciones } from '../../resultados/services/resultadosService';
 import {
   actualizarPronostico,
   confirmarPronostico,
@@ -100,6 +102,194 @@ function OpcionPopularItem({
   );
 }
 
+interface TarjetaCategoriaProps {
+  titulo: string;
+  userPilotoId: string | null;
+  oficialPilotoId: string | undefined;
+  acierto: boolean;
+  puntosAcierto: number;
+  tieneResultado: boolean;
+  pilotos: PilotoConEscuderia[];
+  fotos: Record<string, string | null>;
+}
+
+function TarjetaCategoria({
+  titulo,
+  userPilotoId,
+  oficialPilotoId,
+  acierto,
+  puntosAcierto,
+  tieneResultado,
+  pilotos,
+  fotos
+}: TarjetaCategoriaProps) {
+  const userPiloto = pilotos.find(p => p.id === userPilotoId);
+  const oficialPiloto = pilotos.find(p => p.id === oficialPilotoId);
+
+  return (
+    <div className={`post-pronostico-card ${tieneResultado ? (acierto ? 'acierto' : 'fallido') : ''}`}>
+      <div className="post-pronostico-card__header">
+        <span className="post-pronostico-card__titulo">{titulo}</span>
+        {tieneResultado && (
+          <span className={`post-pronostico-card__badge ${acierto ? 'badge-acierto' : 'badge-fallido'}`}>
+            {acierto ? `✓ Acierto (+${puntosAcierto} pts)` : '✗ Fallido'}
+          </span>
+        )}
+      </div>
+      
+      <div className="post-pronostico-card__content">
+        <div className="post-pronostico-card__pilot-info">
+          <small className="text-muted block">Tu predicción:</small>
+          {userPiloto ? (
+            <div className="flex-align-center" style={{ gap: '0.75rem', marginTop: '0.25rem' }}>
+              <PilotoAvatar
+                nombre={userPiloto.nombre}
+                color={userPiloto.escuderia?.color}
+                fotoUrl={fotos[userPiloto.id] ?? undefined}
+                tamano="md"
+              />
+              <div>
+                <p style={{ fontWeight: 600, fontSize: '0.95rem', margin: 0 }}>{userPiloto.nombre}</p>
+                <p className="text-muted" style={{ fontSize: '0.8rem', margin: 0 }}>{userPiloto.escuderia?.nombre}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginTop: '0.25rem', margin: 0 }}>Ninguno seleccionado</p>
+          )}
+        </div>
+
+        {tieneResultado && !acierto && (
+          <div className="post-pronostico-card__real-info" style={{ borderTop: '1px solid var(--gray-800)', paddingTop: '0.75rem', marginTop: '0.75rem' }}>
+            <small className="text-muted block">Resultado oficial:</small>
+            {oficialPiloto ? (
+              <div className="flex-align-center" style={{ gap: '0.75rem', marginTop: '0.25rem' }}>
+                <PilotoAvatar
+                  nombre={oficialPiloto.nombre}
+                  color={oficialPiloto.escuderia?.color}
+                  fotoUrl={fotos[oficialPiloto.id] ?? undefined}
+                  tamano="sm"
+                />
+                <div>
+                  <p style={{ fontWeight: 500, fontSize: '0.85rem', margin: 0 }}>{oficialPiloto.nombre}</p>
+                  <p className="text-muted" style={{ fontSize: '0.75rem', margin: 0 }}>{oficialPiloto.escuderia?.nombre}</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-muted" style={{ fontSize: '0.8rem', marginTop: '0.25rem', margin: 0 }}>Desconocido</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface VistaPostPronosticoProps {
+  pronostico: Pronostico;
+  pilotos: PilotoConEscuderia[];
+  fotos: Record<string, string | null>;
+  resultadosOficiales: ResultadoOficialConPosiciones | null;
+}
+
+function VistaPostPronostico({
+  pronostico,
+  pilotos,
+  fotos,
+  resultadosOficiales
+}: VistaPostPronosticoProps) {
+  const tieneResultado = resultadosOficiales !== null;
+
+  const oficialP1 = resultadosOficiales?.posiciones.find(p => p.posicion === 1);
+  const oficialP2 = resultadosOficiales?.posiciones.find(p => p.posicion === 2);
+  const oficialP3 = resultadosOficiales?.posiciones.find(p => p.posicion === 3);
+  const oficialPole = resultadosOficiales?.posiciones.find(p => p.es_pole);
+  const oficialVR = resultadosOficiales?.posiciones.find(p => p.es_vuelta_rapida);
+
+  return (
+    <div className="stack" style={{ gap: '1.25rem' }}>
+      {/* Header Info */}
+      <div className="flex-between" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', backgroundColor: 'var(--gray-900)', padding: '1rem', borderRadius: 'var(--radius)', border: '1px solid var(--gray-800)' }}>
+        <div>
+          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>Resumen del Pronóstico</h4>
+          <p className="text-muted" style={{ fontSize: '0.85rem', marginTop: '0.2rem', margin: 0 }}>
+            {pronostico.confirmado ? 'Confirmado ✓' : 'Borrador 🔒'}
+          </p>
+        </div>
+        {tieneResultado && (
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div className="badge-puntos">
+              Puntos: {pronostico.puntos_obtenidos ?? 0} pts
+            </div>
+            <div className="badge-aciertos-perfil">
+              Aciertos: {pronostico.aciertos ?? 0} / 5
+            </div>
+          </div>
+        )}
+      </div>
+
+      {tieneResultado && (
+        <div style={{ backgroundColor: 'rgba(31, 157, 85, 0.08)', border: '1px solid rgba(31, 157, 85, 0.2)', padding: '0.75rem 1rem', borderRadius: 'var(--radius)', color: '#1f9d55', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          🏁 ¡Carrera Finalizada! Los resultados oficiales han sido registrados.
+        </div>
+      )}
+
+      {/* Grid of Predictions */}
+      <div className="post-pronostico-grid">
+        <TarjetaCategoria
+          titulo="1.º Puesto"
+          userPilotoId={pronostico.piloto_p1_id}
+          oficialPilotoId={oficialP1?.piloto_id}
+          acierto={pronostico.piloto_p1_id === oficialP1?.piloto_id}
+          puntosAcierto={10}
+          tieneResultado={tieneResultado}
+          pilotos={pilotos}
+          fotos={fotos}
+        />
+        <TarjetaCategoria
+          titulo="2.º Puesto"
+          userPilotoId={pronostico.piloto_p2_id}
+          oficialPilotoId={oficialP2?.piloto_id}
+          acierto={pronostico.piloto_p2_id === oficialP2?.piloto_id}
+          puntosAcierto={5}
+          tieneResultado={tieneResultado}
+          pilotos={pilotos}
+          fotos={fotos}
+        />
+        <TarjetaCategoria
+          titulo="3.º Puesto"
+          userPilotoId={pronostico.piloto_p3_id}
+          oficialPilotoId={oficialP3?.piloto_id}
+          acierto={pronostico.piloto_p3_id === oficialP3?.piloto_id}
+          puntosAcierto={5}
+          tieneResultado={tieneResultado}
+          pilotos={pilotos}
+          fotos={fotos}
+        />
+        <TarjetaCategoria
+          titulo="Pole Position"
+          userPilotoId={pronostico.piloto_pole_id}
+          oficialPilotoId={oficialPole?.piloto_id}
+          acierto={pronostico.piloto_pole_id === oficialPole?.piloto_id}
+          puntosAcierto={5}
+          tieneResultado={tieneResultado}
+          pilotos={pilotos}
+          fotos={fotos}
+        />
+        <TarjetaCategoria
+          titulo="Vuelta Rápida"
+          userPilotoId={pronostico.piloto_vuelta_rapida_id}
+          oficialPilotoId={oficialVR?.piloto_id}
+          acierto={pronostico.piloto_vuelta_rapida_id === oficialVR?.piloto_id}
+          puntosAcierto={5}
+          tieneResultado={tieneResultado}
+          pilotos={pilotos}
+          fotos={fotos}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function Pronosticos() {
   const [gps, setGps] = useState<GranPremioCalendario[]>([]);
   const [pilotos, setPilotos] = useState<PilotoConEscuderia[]>([]);
@@ -118,6 +308,9 @@ export default function Pronosticos() {
   const [categoriasExpandidas, setCategoriasExpandidas] = useState<Record<string, boolean>>({});
   const [pasoActual, setPasoActual] = useState(0);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [resultadosOficiales, setResultadosOficiales] = useState<ResultadoOficialConPosiciones | null>(null);
+
+  const gpSeleccionado = useMemo(() => gps.find((gp) => gp.id === gpId), [gps, gpId]);
 
   useEffect(() => {
     Promise.all([listarCalendario(), listarPilotos()])
@@ -138,12 +331,21 @@ export default function Pronosticos() {
     setBloqueado(false);
     setError(null);
     setExito(null);
+    setResultadosOficiales(null);
 
     obtenerPronostico(gpId)
       .then((data) => {
         if (!cancelado) {
           setPronostico(data);
           setCampos(aCampos(data));
+
+          if (data.gran_premio_finalizado || gpSeleccionado?.finalizado) {
+            obtenerResultadosGP(gpId)
+              .then((res) => {
+                if (!cancelado) setResultadosOficiales(res);
+              })
+              .catch((err) => console.error("Error cargando resultados", err));
+          }
         }
       })
       .catch((err: unknown) => {
@@ -152,6 +354,14 @@ export default function Pronosticos() {
         if (status === 404) {
           setPronostico(null);
           setCampos(CAMPOS_INICIALES);
+
+          if (gpSeleccionado?.finalizado) {
+            obtenerResultadosGP(gpId)
+              .then((res) => {
+                if (!cancelado) setResultadosOficiales(res);
+              })
+              .catch((err) => console.error("Error cargando resultados", err));
+          }
         } else if (status === 402) {
           setBloqueado(true);
         } else {
@@ -163,7 +373,7 @@ export default function Pronosticos() {
     return () => {
       cancelado = true;
     };
-  }, [gpId]);
+  }, [gpId, gpSeleccionado]);
 
   useEffect(() => {
     setCategoriasExpandidas({});
@@ -189,7 +399,6 @@ export default function Pronosticos() {
     };
   }, [gpId]);
 
-  const gpSeleccionado = useMemo(() => gps.find((gp) => gp.id === gpId), [gps, gpId]);
   const popularesVisibles = useMemo(() => {
     if (populares && populares.total_confirmados > 0) {
       return { datos: populares, simulado: false };
@@ -333,93 +542,169 @@ export default function Pronosticos() {
 
             {!cargandoPronostico && (
               <>
-                <div>
-                  <h3>{paso.titulo}</h3>
-                  <p className="text-muted">{paso.descripcion}</p>
-
-                  <div className="piloto-slots">
-                    {paso.campos.map((campo, i) => {
-                      const p = piloto(campos[campo]);
-                      return (
-                        <button
-                          key={campo}
-                          type="button"
-                          className="piloto-slot"
-                          disabled={noEditable || guardando}
-                          onClick={() => setModalAbierto(true)}
-                        >
-                          <div className="piloto-slot__avatar-wrap">
-                            {p ? (
-                              <PilotoAvatar
-                                nombre={p.nombre}
-                                color={p.escuderia?.color}
-                                fotoUrl={fotos[p.id]}
-                                tamano="lg"
-                              />
-                            ) : (
-                              <div className="piloto-slot__vacio">+</div>
-                            )}
-                            {p && !noEditable && (
-                              <span className="piloto-slot__editar" aria-hidden="true">
-                                ✎
-                              </span>
-                            )}
+                {noEditable ? (
+                  pronostico ? (
+                    <VistaPostPronostico
+                      pronostico={pronostico}
+                      pilotos={pilotos}
+                      fotos={fotos}
+                      resultadosOficiales={resultadosOficiales}
+                    />
+                  ) : (
+                    <div className="stack" style={{ gap: '1.5rem' }}>
+                      <div className="empty-state" style={{ padding: '2rem 1rem' }}>
+                        No registraste ningún pronóstico para este Gran Premio.
+                      </div>
+                      {resultadosOficiales && (
+                        <div>
+                          <h4 style={{ marginBottom: '1rem', textAlign: 'center', fontWeight: 700 }}>Resultados Oficiales de la Carrera</h4>
+                          <div className="post-pronostico-grid">
+                            <TarjetaCategoria
+                              titulo="1.º Puesto"
+                              userPilotoId={null}
+                              oficialPilotoId={resultadosOficiales.posiciones.find(p => p.posicion === 1)?.piloto_id}
+                              acierto={false}
+                              puntosAcierto={10}
+                              tieneResultado={true}
+                              pilotos={pilotos}
+                              fotos={fotos}
+                            />
+                            <TarjetaCategoria
+                              titulo="2.º Puesto"
+                              userPilotoId={null}
+                              oficialPilotoId={resultadosOficiales.posiciones.find(p => p.posicion === 2)?.piloto_id}
+                              acierto={false}
+                              puntosAcierto={5}
+                              tieneResultado={true}
+                              pilotos={pilotos}
+                              fotos={fotos}
+                            />
+                            <TarjetaCategoria
+                              titulo="3.º Puesto"
+                              userPilotoId={null}
+                              oficialPilotoId={resultadosOficiales.posiciones.find(p => p.posicion === 3)?.piloto_id}
+                              acierto={false}
+                              puntosAcierto={5}
+                              tieneResultado={true}
+                              pilotos={pilotos}
+                              fotos={fotos}
+                            />
+                            <TarjetaCategoria
+                              titulo="Pole Position"
+                              userPilotoId={null}
+                              oficialPilotoId={resultadosOficiales.posiciones.find(p => p.es_pole)?.piloto_id}
+                              acierto={false}
+                              puntosAcierto={5}
+                              tieneResultado={true}
+                              pilotos={pilotos}
+                              fotos={fotos}
+                            />
+                            <TarjetaCategoria
+                              titulo="Vuelta Rápida"
+                              userPilotoId={null}
+                              oficialPilotoId={resultadosOficiales.posiciones.find(p => p.es_vuelta_rapida)?.piloto_id}
+                              acierto={false}
+                              puntosAcierto={5}
+                              tieneResultado={true}
+                              pilotos={pilotos}
+                              fotos={fotos}
+                            />
                           </div>
-                          {paso.etiquetas?.[i] && (
-                            <span className="piloto-slot__posicion">{paso.etiquetas[i]}</span>
-                          )}
-                          <span className="piloto-slot__nombre">{p ? p.nombre : 'Elegir piloto'}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                ) : (
+                  <>
+                    <div>
+                      <h3>{paso.titulo}</h3>
+                      <p className="text-muted">{paso.descripcion}</p>
 
-                  <div className="wizard-dots">
-                    {PASOS.map((p, i) => (
-                      <button
-                        key={p.titulo}
-                        type="button"
-                        className={[
-                          'wizard-dot',
-                          i === pasoActual ? 'wizard-dot--activo' : '',
-                          pasoCompleto(p, campos) ? 'wizard-dot--completo' : '',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                        onClick={() => setPasoActual(i)}
-                        aria-label={p.titulo}
-                      />
-                    ))}
-                  </div>
+                      <div className="piloto-slots">
+                        {paso.campos.map((campo, i) => {
+                          const p = piloto(campos[campo]);
+                          return (
+                            <button
+                              key={campo}
+                              type="button"
+                              className="piloto-slot"
+                              disabled={noEditable || guardando}
+                              onClick={() => setModalAbierto(true)}
+                            >
+                              <div className="piloto-slot__avatar-wrap">
+                                {p ? (
+                                  <PilotoAvatar
+                                    nombre={p.nombre}
+                                    color={p.escuderia?.color}
+                                    fotoUrl={fotos[p.id]}
+                                    tamano="lg"
+                                  />
+                                ) : (
+                                  <div className="piloto-slot__vacio">+</div>
+                                )}
+                                {p && !noEditable && (
+                                  <span className="piloto-slot__editar" aria-hidden="true">
+                                    ✎
+                                  </span>
+                                )}
+                              </div>
+                              {paso.etiquetas?.[i] && (
+                                <span className="piloto-slot__posicion">{paso.etiquetas[i]}</span>
+                              )}
+                              <span className="piloto-slot__nombre">{p ? p.nombre : 'Elegir piloto'}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                  <div className="wizard-nav">
-                    <Button
-                      variante="secondary"
-                      onClick={() => setPasoActual((prev) => Math.max(0, prev - 1))}
-                      disabled={pasoActual === 0}
-                    >
-                      ← Anterior
-                    </Button>
-                    <Button
-                      onClick={() => setPasoActual((prev) => Math.min(PASOS.length - 1, prev + 1))}
-                      disabled={pasoActual === PASOS.length - 1}
-                    >
-                      Siguiente →
-                    </Button>
-                  </div>
-                </div>
+                      <div className="wizard-dots">
+                        {PASOS.map((p, i) => (
+                          <button
+                            key={p.titulo}
+                            type="button"
+                            className={[
+                              'wizard-dot',
+                              i === pasoActual ? 'wizard-dot--activo' : '',
+                              pasoCompleto(p, campos) ? 'wizard-dot--completo' : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            onClick={() => setPasoActual(i)}
+                            aria-label={p.titulo}
+                          />
+                        ))}
+                      </div>
 
-                {podioRepetido && <p className="form-error">Un piloto no puede ocupar más de una posición del podio.</p>}
+                      <div className="wizard-nav">
+                        <Button
+                          variante="secondary"
+                          onClick={() => setPasoActual((prev) => Math.max(0, prev - 1))}
+                          disabled={pasoActual === 0}
+                        >
+                          ← Anterior
+                        </Button>
+                        <Button
+                          onClick={() => setPasoActual((prev) => Math.min(PASOS.length - 1, prev + 1))}
+                          disabled={pasoActual === PASOS.length - 1}
+                        >
+                          Siguiente →
+                        </Button>
+                      </div>
+                    </div>
 
-                {!noEditable && (
-                  <div className="pronosticos-actions">
-                    <Button variante="secondary" onClick={() => void guardar(false)} disabled={guardando || podioRepetido}>
-                      Guardar borrador
-                    </Button>
-                    <Button onClick={() => void guardar(true)} disabled={guardando || podioRepetido || !completo}>
-                      Confirmar pronóstico
-                    </Button>
-                  </div>
+                    {podioRepetido && <p className="form-error">Un piloto no puede ocupar más de una posición del podio.</p>}
+
+                    {!noEditable && (
+                      <div className="pronosticos-actions">
+                        <Button variante="secondary" onClick={() => void guardar(false)} disabled={guardando || podioRepetido}>
+                          Guardar borrador
+                        </Button>
+                        <Button onClick={() => void guardar(true)} disabled={guardando || podioRepetido || !completo}>
+                          Confirmar pronóstico
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}

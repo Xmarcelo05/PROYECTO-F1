@@ -9,6 +9,9 @@ export interface Pronostico {
   piloto_vuelta_rapida_id: string | null;
   confirmado: boolean;
   puntos_obtenidos: number;
+  gran_premio_nombre?: string | null;
+  gran_premio_finalizado?: boolean | null;
+  aciertos?: number;
   created_at: string;
   updated_at: string;
 }

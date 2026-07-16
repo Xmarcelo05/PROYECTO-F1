@@ -1022,3 +1022,131 @@ tr:last-child td {
   .calendario-mes { overflow-x: auto; }
   .calendario-semana, .calendario-cuadricula { min-width: 620px; }
 }
+
+/* Estilos para Vista Post Pronóstico */
+.post-pronostico-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.post-pronostico-card {
+  background: var(--gray-950);
+  border: 1px solid var(--gray-800);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.post-pronostico-card:hover {
+  transform: translateY(-2px);
+}
+
+.post-pronostico-card.acierto {
+  border-color: rgba(31, 157, 85, 0.4);
+  background: linear-gradient(180deg, var(--gray-900) 0%, rgba(31, 157, 85, 0.05) 100%);
+}
+
+.post-pronostico-card.fallido {
+  border-color: rgba(225, 6, 0, 0.2);
+  background: linear-gradient(180deg, var(--gray-900) 0%, rgba(225, 6, 0, 0.02) 100%);
+}
+
+.post-pronostico-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--gray-800);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.post-pronostico-card__titulo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-400);
+}
+
+.post-pronostico-card__badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.badge-acierto {
+  background: rgba(31, 157, 85, 0.15);
+  color: #1f9d55;
+  border: 1px solid rgba(31, 157, 85, 0.3);
+}
+
+.badge-fallido {
+  background: rgba(225, 6, 0, 0.1);
+  color: #ff4d4d;
+  border: 1px solid rgba(225, 6, 0, 0.2);
+}
+
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.block {
+  display: block;
+}
+
+/* Historial de Pronósticos en Perfil */
+.historial-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.historial-table th,
+.historial-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--gray-800);
+}
+
+.historial-table th {
+  font-weight: 700;
+  color: var(--gray-400);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.historial-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.badge-puntos {
+  background: rgba(225, 6, 0, 0.15);
+  color: var(--f1-red);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+  border: 1px solid rgba(225, 6, 0, 0.3);
+  display: inline-block;
+}
+
+.badge-aciertos-perfil {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  display: inline-block;
+}

@@ -1,5 +1,5 @@
 import axiosClient from '../../../core/api/axiosClient';
-import type { Rol } from '../../../models';
+import type { Rol, Pronostico } from '../../../models';
 
 /** DTO devuelto por GET/PUT /users/me (UsuarioPerfilOut). */
 export interface UsuarioPerfil {
@@ -21,6 +21,11 @@ export interface UsuarioPerfil {
 
 export async function obtenerPerfil(): Promise<UsuarioPerfil> {
   const { data } = await axiosClient.get<UsuarioPerfil>('/users/me');
+  return data;
+}
+
+export async function obtenerMisPronosticos(): Promise<Pronostico[]> {
+  const { data } = await axiosClient.get<Pronostico[]>('/users/me/pronosticos');
   return data;
 }
 
@@ -84,5 +89,3 @@ export async function obtenerPase(): Promise<PaseTemporadaInfo | null> {
   const { data } = await axiosClient.get<PaseTemporadaInfo | null>('/acceso/pase');
   return data;
 }
-
-

@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../core/hooks/useAuth';
 import Card from '../../../shared/components/Card';
 import Button from '../../../shared/components/Button';
+import type { Pronostico } from '../../../models';
 import type { PaseTemporadaInfo } from '../services/perfilService';
 import {
   verificarTelefono,
@@ -10,7 +11,8 @@ import {
   crearCheckoutSession,
   confirmarPagoStripe,
   simularWebhookKyc,
-  obtenerPase
+  obtenerPase,
+  obtenerMisPronosticos
 } from '../services/perfilService';
 
 export default function Perfil() {
@@ -32,6 +34,10 @@ export default function Perfil() {
   const [pase, setPase] = useState<PaseTemporadaInfo | null>(null);
   const [cargandoPase, setCargandoPase] = useState(true);
 
+  // Historial de Pronósticos
+  const [historial, setHistorial] = useState<Pronostico[]>([]);
+  const [cargandoHistorial, setCargandoHistorial] = useState(true);
+
   // Cargar estado de Pase de Temporada
   useEffect(() => {
     if (!usuario) return;
@@ -39,6 +45,15 @@ export default function Perfil() {
       .then(setPase)
       .catch(console.error)
       .finally(() => setCargandoPase(false));
+  }, [usuario]);
+
+  // Cargar historial de pronósticos
+  useEffect(() => {
+    if (!usuario) return;
+    obtenerMisPronosticos()
+      .then(setHistorial)
+      .catch(console.error)
+      .finally(() => setCargandoHistorial(false));
   }, [usuario]);
 
   // Manejar Callback de Pago
@@ -427,6 +442,75 @@ export default function Perfil() {
             </div>
           )}
         </div>
+      </Card>
+
+      {/* Historial de Pronósticos */}
+      <Card style={{ marginTop: '1.5rem' }}>
+        <h2 style={{ fontSize: '1.35rem', marginBottom: '0.5rem', borderBottom: '1px solid var(--gray-700)', paddingBottom: '0.5rem' }}>
+          🏆 Historial de Pronósticos
+        </h2>
+        <p className="text-muted" style={{ marginBottom: '1rem' }}>
+          Consulta los Grandes Premios pronosticados, tus puntos ganados y el total de aciertos obtenidos.
+        </p>
+
+        {cargandoHistorial ? (
+          <p className="text-muted">Cargando tu historial de pronósticos...</p>
+        ) : historial.length === 0 ? (
+          <div className="empty-state" style={{ padding: '1.5rem 0' }}>
+            Aún no has realizado ningún pronóstico.
+          </div>
+        ) : (
+          <div className="historial-table-container">
+            <table className="historial-table">
+              <thead>
+                <tr>
+                  <th>Gran Premio</th>
+                  <th>Fecha de Registro</th>
+                  <th>Estado</th>
+                  <th style={{ textAlign: 'center' }}>Aciertos</th>
+                  <th style={{ textAlign: 'center' }}>Puntos Ganados</th>
+                </tr>
+              </thead>
+              <tbody>
+                {historial.map((pron) => (
+                  <tr key={pron.id}>
+                    <td style={{ fontWeight: 600 }}>
+                      {pron.gran_premio_nombre ?? 'Gran Premio'}
+                    </td>
+                    <td className="text-muted" style={{ fontSize: '0.85rem' }}>
+                      {new Date(pron.created_at).toLocaleDateString()}
+                    </td>
+                    <td>
+                      {pron.confirmado ? (
+                        <span style={{ color: '#1f9d55', fontSize: '0.85rem', fontWeight: 600 }}>Confirmado ✓</span>
+                      ) : (
+                        <span style={{ color: '#b45309', fontSize: '0.85rem', fontWeight: 600 }}>Borrador 🔒</span>
+                      )}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      {pron.confirmado && pron.gran_premio_finalizado ? (
+                        <span className="badge-aciertos-perfil">
+                          {pron.aciertos ?? 0} / 5
+                        </span>
+                      ) : (
+                        <span className="text-muted">—</span>
+                      )}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      {pron.confirmado && pron.gran_premio_finalizado ? (
+                        <span className="badge-puntos">
+                          +{pron.puntos_obtenidos ?? 0} pts
+                        </span>
+                      ) : (
+                        <span className="text-muted">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
     </div>
   );
