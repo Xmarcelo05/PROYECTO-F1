@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 from app.modules.resultados.schemas import ResultadoPosicionCreate
+from app.modules.auth.schemas import RolOut
 
 
 class GranPremioCreate(BaseModel):
@@ -22,7 +23,30 @@ class GranPremioUpdate(BaseModel):
     ronda: int | None = None
     fecha_inicio: datetime | None = None
     fecha_carrera: datetime | None = None
+    finalizado: bool | None = None
 
 
 class ResultadoOficialCreate(BaseModel):
     posiciones: list[ResultadoPosicionCreate]
+
+
+class UsuarioAdminOut(BaseModel):
+    id: uuid.UUID
+    nombre: str
+    correo: EmailStr
+    activo: bool
+    correo_verificado: bool
+    telefono_verificado: bool
+    kyc_estado: str
+    rol: RolOut
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class UsuarioAdminUpdate(BaseModel):
+    nombre: str | None = Field(None, min_length=2, max_length=100)
+    correo: EmailStr | None = None
+    activo: bool | None = None
+    rol_nombre: str | None = Field(None, pattern="^(usuario|administrador)$")

@@ -32,9 +32,14 @@ export default function Navbar() {
         ))}
 
         {usuario && (
-          <NavLink to="/pronosticos" className={claseLink}>
-            Pronósticos
-          </NavLink>
+          <>
+            <NavLink to="/pronosticos" className={claseLink}>
+              Pronósticos
+            </NavLink>
+            <NavLink to="/ranking" className={claseLink}>
+              Ranking
+            </NavLink>
+          </>
         )}
 
         {esAdmin && (

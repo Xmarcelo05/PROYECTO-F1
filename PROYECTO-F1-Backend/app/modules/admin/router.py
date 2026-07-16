@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.core.security import get_current_admin
 from app.core.exceptions import NoEncontrado, SolicitudInvalida
-from app.modules.auth.models import Usuario
+from app.modules.auth.models import Usuario, Rol
 from app.modules.calendario.models import GranPremio
 from app.modules.escuderias.models import Escuderia
 from app.modules.pilotos.models import Piloto
@@ -250,7 +250,8 @@ def registrar_resultados_oficiales(
     if resultado_existente:
         raise SolicitudInvalida("Los resultados oficiales para este Gran Premio ya están registrados.")
 
-    # 3. Crear el resultado oficial
+    # 3. Crear el resultado oficial y marcar el GP como finalizado
+    gp.finalizado = True
     db_resultado = ResultadoOficial(gran_premio_id=gp_id)
     db.add(db_resultado)
     db.commit()
@@ -325,3 +326,19 @@ def registrar_resultados_oficiales(
     db.commit()
 
     return {"detail": "Resultados oficiales registrados y pronósticos evaluados con éxito."}
+
+
+@router.post("/grandes-premios/{gp_id}/finalizar", status_code=status.HTTP_200_OK)
+def finalizar_carrera_manualmente(
+    gp_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    admin: Usuario = Depends(get_current_admin)
+):
+    gp = db.query(GranPremio).filter(GranPremio.id == gp_id).first()
+    if not gp:
+        raise NoEncontrado("Gran Premio no encontrado")
+    
+    gp.finalizado = True
+    db.commit()
+    db.refresh(gp)
+    return {"detail": "Gran Premio finalizado manualmente.", "finalizado": gp.finalizado}

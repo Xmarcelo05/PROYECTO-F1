@@ -122,3 +122,12 @@ export async function registrarResultadosOficiales(
   });
   return data;
 }
+
+export async function finalizarGPManualmente(
+  gpId: string,
+): Promise<{ detail: string; finalizado: boolean }> {
+  const { data } = await axiosClient.post<{ detail: string; finalizado: boolean }>(
+    `/admin/grandes-premios/${gpId}/finalizar`,
+  );
+  return data;
+}

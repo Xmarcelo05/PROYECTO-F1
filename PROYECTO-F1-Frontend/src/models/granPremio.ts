@@ -11,6 +11,7 @@ export interface GranPremio {
   ronda: number;
   fecha_inicio: string;
   fecha_carrera: string;
+  finalizado: boolean;
   created_at: string;
   updated_at: string;
   estado: EstadoGP;

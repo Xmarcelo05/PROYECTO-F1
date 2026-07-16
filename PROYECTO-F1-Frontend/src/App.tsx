@@ -15,6 +15,7 @@ import Escuderias from './features/competencia/pages/Escuderias';
 import ResultadosIndex from './features/resultados/pages/ResultadosIndex';
 import ResultadosGP from './features/resultados/pages/ResultadosGP';
 import ClasificacionCampeonato from './features/resultados/pages/ClasificacionCampeonato';
+import Ranking from './features/resultados/pages/Ranking';
 import Pronosticos from './features/pronosticos/pages/Pronosticos';
 import AdminHome from './features/admin/pages/AdminHome';
 import GestionGPs from './features/admin/pages/GestionGPs';
@@ -46,6 +47,7 @@ function App() {
           <Route path="/resultados/:id" element={<ResultadosGP />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/pronosticos" element={<Pronosticos />} />
+          <Route path="/ranking" element={<Ranking />} />
         </Route>
 
         <Route element={<AdminRoute />}>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { listarCalendario } from '../../calendario/services/calendarioService';
 import type { GranPremioCalendario } from '../../calendario/services/calendarioService';
-import { actualizarGP, crearGP, eliminarGP } from '../services/adminService';
+import { actualizarGP, crearGP, eliminarGP, finalizarGPManualmente } from '../services/adminService';
 import type { GranPremioPayload } from '../services/adminService';
 import { getErrorMessage } from '../../../core/api/apiError';
 import Card from '../../../shared/components/Card';
@@ -86,6 +86,17 @@ export default function GestionGPs() {
       cargar();
     } catch (err) {
       setError(getErrorMessage(err, 'No se pudo eliminar el Gran Premio.'));
+    }
+  }
+
+  async function manejarFinalizar(id: string) {
+    if (!confirm('¿Finalizar este Gran Premio manualmente?')) return;
+    setError(null);
+    try {
+      await finalizarGPManualmente(id);
+      cargar();
+    } catch (err) {
+      setError(getErrorMessage(err, 'No se pudo finalizar el Gran Premio.'));
     }
   }
 
@@ -213,7 +224,17 @@ export default function GestionGPs() {
                   <td>{gp.temporada}</td>
                   <td>{new Date(gp.fecha_carrera).toLocaleDateString('es')}</td>
                   <td>
-                    <div className="form-row">
+                    <div className="form-row" style={{ alignItems: 'center' }}>
+                      {!gp.finalizado && (
+                        <Button tamano="sm" variante="secondary" onClick={() => void manejarFinalizar(gp.id)} style={{ color: 'var(--f1-red)', borderColor: 'var(--f1-red)' }}>
+                          Finalizar
+                        </Button>
+                      )}
+                      {gp.finalizado && (
+                        <span style={{ fontSize: '0.75rem', color: 'var(--gray-500)', background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.5rem', borderRadius: '0.25rem' }}>
+                          Finalizado
+                        </span>
+                      )}
                       <Button tamano="sm" variante="secondary" onClick={() => editar(gp)}>
                         Editar
                       </Button>

@@ -17,3 +17,15 @@ export async function obtenerResultadosGP(gpId: string): Promise<ResultadoOficia
   );
   return data;
 }
+
+export interface UsuarioRanking {
+  nombre: string;
+  puntos_totales: number;
+  posicion_ranking: number;
+}
+
+// EP-07: ranking global de usuarios (HU-24)
+export async function obtenerRankingGlobal(): Promise<UsuarioRanking[]> {
+  const { data } = await axiosClient.get<UsuarioRanking[]>('/ranking');
+  return data;
+}
