@@ -5,8 +5,8 @@ import Footer from './Footer';
 export default function Layout() {
   return (
     <>
+      <Navbar />
       <div className="app-shell">
-        <Navbar />
         <main className="app-main">
           <Outlet />
         </main>

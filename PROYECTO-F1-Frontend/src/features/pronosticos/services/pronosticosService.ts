@@ -38,3 +38,27 @@ export async function confirmarPronostico(pronosticoId: string): Promise<Pronost
   const { data } = await axiosClient.post<Pronostico>(`/pronosticos/${pronosticoId}/confirmar`);
   return data;
 }
+
+export interface OpcionPopular {
+  piloto_id: string;
+  piloto_nombre: string;
+  votos: number;
+  porcentaje: number;
+}
+
+export interface CategoriaPopular {
+  categoria: string;
+  etiqueta: string;
+  opciones: OpcionPopular[];
+}
+
+export interface PronosticosPopulares {
+  gran_premio_id: string;
+  total_confirmados: number;
+  categorias: CategoriaPopular[];
+}
+
+export async function obtenerPronosticosPopulares(gpId: string): Promise<PronosticosPopulares> {
+  const { data } = await axiosClient.get<PronosticosPopulares>(`/pronosticos/gp/${gpId}/populares`);
+  return data;
+}
