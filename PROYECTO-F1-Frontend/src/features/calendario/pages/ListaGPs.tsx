@@ -93,7 +93,7 @@ export default function ListaGPs() {
     <div className="stack">
       <div className="page-header flex-between">
         <div>
-          <h1>Calendario interactivo</h1>
+          <h1>Calendario </h1>
           <p>Consulta las carreras programadas de la temporada y haz tus pronósticos.</p>
         </div>
         <div className="form-group" style={{ minWidth: 160 }}>

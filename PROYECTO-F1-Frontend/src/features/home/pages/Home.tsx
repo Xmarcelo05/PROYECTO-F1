@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div className="stack">
       <div className="page-header">
-        <h1>Pronosticos F4 SEGA THENEGAME</h1>
+        <h1>Pronosticos F4 EA IN THE GAME</h1>
         <p>{usuario ? `Bienvenido, ${usuario.nombre}. Explora la temporada y crea tus pronosticos.` : 'Plataforma para seguir la temporada de Formula 1.'}</p>
       </div>
 
