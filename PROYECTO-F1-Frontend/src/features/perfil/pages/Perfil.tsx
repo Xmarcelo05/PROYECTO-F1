@@ -138,7 +138,7 @@ export default function Perfil() {
       const session = await iniciarKycSession();
       setSuccessMsg('Abriendo pantalla de verificación KYC...');
       // En producción esto abre la pasarela de Didit, en sandbox la mockeamos.
-      window.open(session.session_url, '_blank');
+      window.open(session.url, '_blank');
       // Simulamos que el webhook está en progreso
       await refrescarPerfil();
     } catch (err: any) {

@@ -39,7 +39,7 @@ export async function verificarTelefono(telefono: string, firebaseToken: string)
 
 export interface KycSession {
   session_id: string;
-  session_url: string;
+  url: string;
   token: string;
 }
 
