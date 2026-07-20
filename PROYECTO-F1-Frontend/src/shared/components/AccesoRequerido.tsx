@@ -15,7 +15,14 @@ export default function AccesoRequerido({
       <div className="paywall__icon" aria-hidden="true">🔒</div>
       <h3>Contenido bloqueado</h3>
       <p>{mensaje}</p>
-      <p className="text-muted" style={{ marginTop: '0.75rem' }}>
+      
+      <div style={{ marginTop: '1.25rem' }}>
+        <Link to="/perfil" className="btn btn-primary">
+          Comprar pase
+        </Link>
+      </div>
+
+      <p className="text-muted" style={{ marginTop: '1rem' }}>
         <Link to="/calendario">Volver al calendario</Link>
       </p>
     </Card>

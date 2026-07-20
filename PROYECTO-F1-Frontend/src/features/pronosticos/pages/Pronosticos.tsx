@@ -24,7 +24,7 @@ import {
 } from '../services/pronosticosService';
 import type { CamposPronostico, OpcionPopular, PronosticosPopulares } from '../services/pronosticosService';
 import { generarPronosticosPopularesSimulados } from '../data/pronosticosPopularesSimulados';
-import { useNavigate } from 'react-router-dom';
+
 
 
 const CAMPOS_INICIALES: CamposPronostico = {
@@ -293,7 +293,7 @@ function VistaPostPronostico({
 }
 
 export default function Pronosticos() {
-  const navigate = useNavigate();   // 👈 agregar esta línea
+
 
   const [gps, setGps] = useState<GranPremioCalendario[]>([]);
   const [pilotos, setPilotos] = useState<PilotoConEscuderia[]>([]);
@@ -508,15 +508,8 @@ export default function Pronosticos() {
 
   if (cargando) return <Loader mensaje="Preparando pronósticos..." />;
   if (bloqueado) {
-  return (
-    <div className="stack">
-      <AccesoRequerido mensaje="Necesitas un pase de temporada activo para crear y consultar tus pronósticos." />
-      <button className="btn-primary" onClick={() => navigate('/perfil')}>
-        Comprar pase
-      </button>
-    </div>
-  );
-}
+    return <AccesoRequerido mensaje="Necesitas un pase de temporada activo para crear y consultar tus pronósticos." />;
+  }
 
   return (
     <div className="stack">
