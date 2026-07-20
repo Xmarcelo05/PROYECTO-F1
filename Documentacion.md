@@ -1,10 +1,10 @@
-# Documentación Técnica, Arquitectura de Sistemas y Modelado Ágil: PronoStats (MVP)
+# Documentación Técnica, Arquitectura de Sistemas y Modelado Ágil: PronoStats
 
 **Universidad Laica Eloy Alfaro de Manabí (ULEAM)** **Facultad de Ciencias de la Vida y Tecnologías - Carrera de Ingeniería en Software (Nivel 5)** **Asignatura:** Modelado Ágil del Software  
 **Docente:** Ing. Israel Gomez  
 **Período Académico:** 2026-1  
 
-**Equipo de Desarrollo (Grupo C) - En orden alfabético por rol principal:**
+**Equipo de Desarrollo (Grupo C):**
 * Balzeca Rezabala Fabian Andre
 * Veliz Ponce Leandro Jesus
 * Loor Muñoz Jose Andres
@@ -15,16 +15,16 @@
 
 ## 1. Enlaces Oficiales, Despliegue y Entorno de Pruebas
 
-El sistema ha sido desplegado exitosamente utilizando contenedores serverless en la nube, garantizando alta disponibilidad y paridad total entre los entornos de desarrollo y producción.
+El sistema ha sido desplegado utilizando contenedores serverless en la nube, garantizando alta disponibilidad y paridad total entre los entornos de desarrollo y producción.
 
 * **Repositorio de Código Fuente (GitHub):** https://github.com/FABIAn3RS/PROYECTO-F1
 * **Despliegue Producción (Google Cloud Run):** https://proyecto-f1-frontend-5czk4oasdq-uc.a.run.app
 
 ### 1.1. Credenciales para Demostración (Evaluación Académica)
-Para facilitar la evaluación interactiva del flujo de seguridad transaccional y los bloqueos de estado del MVP, se habilitó el siguiente entorno de pruebas (Sandbox):
+Para facilitar la evaluación interactiva del flujo de seguridad transaccional y los bloqueos de estado del MVP, se habilitó el siguiente entorno de pruebas:
 * **Usuario de prueba:** fremarbrapo@gmail.com
 * **Contraseña:** Abc12345
-* **Tarjeta de Crédito ficticia (Stripe Sandbox):** 4242 4242 4242 4242 (CVC: 123, Fecha de expiración: Cualquiera válida a futuro).
+* **Tarjeta de Crédito ficticia (Stripe Sandbox):** 4242 4242 4242 4242 (CVC: Cualquier número de tres digítos, Fecha de expiración: Cualquiera válida a futuro).
 
 ### 1.2. Referencias Oficiales de API de Terceros (Didit v3)
 * Documentación API - Validación Registral de Cédula (Ecuador): https://docs.didit.me/api-reference/database-validation/ecuador/cedula
@@ -51,12 +51,12 @@ La arquitectura cliente-servidor se estructuró aplicando principios de **Diseñ
 Uno de los desafíos de ingeniería más rigurosos fue estructurar un modelo comercial que cumpliera estrictamente con el marco legal ecuatoriano y las políticas de las pasarelas de pago internacionales sobre los juegos de azar.
 
 ### 3.1. Pivote Arquitectónico: Modelo Tipster / Fantasy League
-El equipo ejecutó un pivote estratégico y documentado: **PronoStats NO opera como una casa de apuestas**. El sistema bloquea explícitamente los depósitos recargables de dinero (billeteras virtuales) y no efectúa retornos monetarios líquidos por aciertos. Opera bajo un esquema de *Fantasy League* o plataforma de *Tipsters*, donde la única métrica de valor es la acumulación de puntos en un Ranking Global público.
+El equipo ejecutó un pivote/cambio estratégico y documentado: **PronoStats NO opera como una casa de apuestas**. El sistema bloquea explícitamente los depósitos recargables de dinero (billeteras virtuales) y no efectúa retornos monetarios líquidos por aciertos. Opera bajo un esquema de *Fantasy League* o plataforma de *Tipsters*, donde la única métrica de valor es la acumulación de puntos en un Ranking Global público.
 * **Nivel Freemium:** Los usuarios verificados obtienen acceso limitado a un único pronóstico gratuito, vinculado a la entidad `gp_gratis_id` en la base de datos.
 * **Pase de Temporada (Premium):** Se modeló la entidad transaccional `PaseTemporada`. Su adquisición mediante un pago único de $20.00 USD desbloquea la participación ilimitada en todas las rondas del campeonato por el período exacto de un año.
 
 ### 3.2. Bloqueos de Estado en React y Checkout Seguro (Stripe + Didit)
-La ejecución financiera se delegó en la infraestructura de **Stripe**. Sin embargo, la interfaz cliente (vía `Perfil.tsx`) implementa un bloqueo multicapa estricto evaluando el estado del JWT: `(!usuario.telefono_verificado || usuario.kyc_estado !== 'aprobado')`.
+La ejecución financiera se delegó en la infraestructura de **Stripe**. Sin embargo, la interfaz cliente (vía `Perfil.tsx`) implementa un bloqueo multicapa estricto evaluando el estado del JWT: `(!usuario.telefono_verificado || usuario.kyc_estado !== 'aprobado')`, de manera que se requiere la autentificación de estos dos factores previo al acceso de la pasarela de pago.
 
 Para habilitar la redirección al *Stripe Checkout*, el usuario debe superar tres barreras de seguridad perimetral de identidad:
 1. **Verificación de Correo:** Validación asíncrona mediante la plataforma *Resend*, mitigando cuentas bot.
