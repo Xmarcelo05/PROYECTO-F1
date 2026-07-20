@@ -1,76 +1,84 @@
-* **FABIAn3RS** (3 days ago): prueba funcionamiento kyc
-* **FABIAn3RS** (3 days ago): feat: Update header titles for Calendario and Pronosticos pages
-* **FABIAn3RS** (4 days ago): Historial
-* **FABIAn3RS** (4 days ago): implementacion ranking
-* **FABIAn3RS** (4 days ago): Merge branch 'master' of https://github.com/FABIAn3RS/PROYECTO-F1
-* **ElOscurito** (6 days ago): feat: Agregar componentes de selecci├│n de piloto y avatar, junto con el hook para cargar fotos
-* **Johandry Viles** (7 days ago): feat: Implementacion de Pronosticos Populares
-* **Johandry Viles** (7 days ago): feat: Primer implementacion para Recuperar Contrasena
-* **Johandry Viles** (7 days ago): fix: Relaciones con los dise├▒os de botones
-* **Johandry Viles** (7 days ago): fix: Arreglo del Sidebar vertical a horizontal
-* **FABIAn3RS** (7 days ago): implementacion stripe
-* **FABIAn3RS** (7 days ago): Merge branch 'master' of https://github.com/FABIAn3RS/PROYECTO-F1
-* **FABIAn3RS** (7 days ago): sega
-* **Fabi├ín Rezabala** (7 days ago): Update cloudbuild.yaml
-* **Fabi├ín Rezabala** (7 days ago): Update Dockerfile
-* **FABIAn3RS** (7 days ago): 4K
-* **Fabi├ín Rezabala** (7 days ago): Update cloudbuild.yaml
-* **Fabi├ín Rezabala** (7 days ago): Update cloudbuild.yaml
-* **Fabi├ín Rezabala** (7 days ago): Create cloudbuild.yaml
-* **Fabi├ín Rezabala** (7 days ago): Rename nginx.conf to nginx.conf.template
-* **Fabi├ín Rezabala** (7 days ago): Update nginx.conf
-* **Fabi├ín Rezabala** (7 days ago): Update Dockerfile
-* **FABIAn3RS** (7 days ago): test nuevo pipeline
-* **FABIAn3RS** (7 days ago): fix: update header title and Docker image tag for consistency
-* **Fabi├ín Rezabala** (7 days ago): Create cloudbuild.yaml
-* **Fabi├ín Rezabala** (7 days ago): Update nginx.conf
-* **Fabi├ín Rezabala** (7 days ago): Update Dockerfile
-* **FABIAn3RS** (7 days ago): Commit de prueba vac├¡o
-* **FABIAn3RS** (7 days ago): fix: update header title to enhance user engagement
-* **FABIAn3RS** (7 days ago): refactor: update nginx configuration to use fixed port and improve cache headers
-* **FABIAn3RS** (7 days ago): mejora interfaz
-* **FABIAn3RS** (7 days ago): actualizacion
-* **FABIAn3RS** (7 days ago): test: confirmar CI/CD funcionando
-* **FABIAn3RS** (7 days ago): test: confirmar CI/CD funcionando
-* **FABIAn3RS** (7 days ago): test: confirmar CI/CD funcionando
-* **FABIAn3RS** (7 days ago): test: retry deploy 2
-* **FABIAn3RS** (7 days ago): test: trigger CI/CD deploy
-* **Fabi├ín Rezabala** (7 days ago): Add files via upload
-* **Fabi├ín Rezabala** (7 days ago): Update and rename nginx.conf.template to nginx.conf
-* **Fabi├ín Rezabala** (7 days ago): Refactor Dockerfile for improved clarity and functionality
-* **Fabi├ín Rezabala** (7 days ago): Delete .github/workflows directory
-* **ElOscurito** (7 days ago): Agregar ruta p├║blica para predicciones y actualizar navegaci├│n en Navbar + Plan MVP
-* **Xmarcelo-05** (7 days ago):     - Backend:       - Creada tabla y modelo 'codigos_verificacion' para validacion de registro por correo.       - Agregado soporte para envio de emails mediante Resend en 'app/core/email.py'.       - Agregada integracion base para sesiones de identidad KYC mediante Didit en 'app/core/didit.py'.       - Implementado webhook de Didit '/users/webhooks/didit' para aprobacion/rechazo asincrono.       - Modificado login para restringir accesos a usuarios con correo verificado.       - Protegido el checkout de pase de temporada restringiendo compras si no se verifica telefono ni KYC.       - Agregado endpoint GET '/acceso/pase' para conocer el estado de la suscripcion.
-* **Fabi├ín Rezabala** (8 days ago): Update deployment configuration for project ID and service
-* **Fabi├ín Rezabala** (8 days ago): Update deploy.yaml
-* **Fabi├ín Rezabala** (8 days ago): Update deploy.yaml
-* **Fabi├ín Rezabala** (8 days ago): Update deploy.yaml
-* **Fabi├ín Rezabala** (8 days ago): Change Docker build context in deploy workflow
-* **Fabi├ín Rezabala** (8 days ago): Delete nginx.conf.template
-* **Fabi├ín Rezabala** (8 days ago): Delete dockerfile
-* **Fabi├ín Rezabala** (8 days ago): Create nginx.conf.template
-* **Fabi├ín Rezabala** (8 days ago): Add Dockerfile for multi-stage build with Nginx
-* **Fabi├ín Rezabala** (8 days ago): Update Cloud Run deployment workflow configuration
-* **Fabi├ín Rezabala** (8 days ago): Create google-cloudrun-docker.yml
-* **Fabi├ín Rezabala** (8 days ago): Update and rename nginx.conf to nginx.conf.template
-* **Fabi├ín Rezabala** (8 days ago): Create nginx.conf
-* **Fabi├ín Rezabala** (8 days ago): Create dockerfile
-* **FABIAn3RS** (8 days ago): feat: add initial SQL scripts for database schema and seed data
-* **FABIAn3RS** (8 days ago): cambios de funcionalidad al main
-* **FABIAn3RS** (8 days ago): la api de obtencion de datos se movio al backend y ahora se sincroniza con la db directamente (el admin puede manipular esos datos aun y puede activar la sincronizacion manualmente)
-* **ElOscurito** (10 days ago): feat(predicciones): implement prediction algorithms and CRUD operations
-* **JohandryViles** (11 days ago): Integracion de API TheSportsDB
-* **Johandry Viles** (11 days ago): feat: Cambio del nombre del Proyecto
-* **Fabi├ín Rezabala** (11 days ago): Rename .env.example to .env
-* **ElOscurito** (11 days ago): Doc quitado
-* **ElOscurito** (11 days ago): Implementaci├│n del MVP por parte del frontend
-* **Johandry Viles** (12 days ago): Update: Cambio del Stack del Proyecto
-* **Leandro Veliz Ponce** (13 days ago): Actualizaci├│n del contexto del sistema y las descripciones de los contenedores.
-* **JoseAndresBruh** (13 days ago): Fix formatting issue in README.md
-* **JoseAndresBruh** (13 days ago): Fix formatting in README.md class diagram
-* **JoseAndresBruh** (13 days ago): Update README with domain model diagram
-* **Johandry Viles** (2 weeks ago): Flujo-Usuario-Admin
-* **Leandro Veliz Ponce** (2 weeks ago): Estructura del proyecto
-* **Leandro Veliz Ponce** (2 weeks ago): Diamagrama Arquitectonico
-* **FABIAn3RS** (3 weeks ago): feat: initialize Angular application with basic structure and routing
-* **FABIAn3RS** (3 weeks ago): framework
+* **JoseAndresBruh** (20/07/2026 02:54): Creation of commits log in historialcommits.txt
+* **JoseAndresBruh** (20/07/2026 02:53): Delete historial_commits.txt
+* **JoseAndresBruh** (20/07/2026 02:52): Add files via upload
+* **JoseAndresBruh** (20/07/2026 02:45): Refactor classes and update relationships in README Domain Model
+* **JoseAndresBruh** (20/07/2026 02:38): Create technical documentation for PronoStats MVP
+* **FABIAn3RS** (20/07/2026 00:02): mejora de lugares
+* **FABIAn3RS** (19/07/2026 23:53): mejor formato box
+* **FABIAn3RS** (19/07/2026 23:26): redirect
+* **FABIAn3RS** (16/07/2026 22:23): prueba funcionamiento kyc
+* **FABIAn3RS** (16/07/2026 21:06): feat: Update header titles for Calendario and Pronosticos pages
+* **FABIAn3RS** (15/07/2026 22:30): Historial
+* **FABIAn3RS** (15/07/2026 21:31): implementacion ranking
+* **FABIAn3RS** (15/07/2026 20:54): Merge branch 'master' of https://github.com/FABIAn3RS/PROYECTO-F1
+* **ElOscurito** (13/07/2026 10:50): feat: Agregar componentes de selecci├│n de piloto y avatar, junto con el hook para cargar fotos
+* **Johandry Viles** (13/07/2026 08:06): feat: Implementacion de Pronosticos Populares
+* **Johandry Viles** (13/07/2026 07:50): feat: Primer implementacion para Recuperar Contrasena
+* **Johandry Viles** (13/07/2026 07:27): fix: Relaciones con los dise├▒os de botones
+* **Johandry Viles** (13/07/2026 07:18): fix: Arreglo del Sidebar vertical a horizontal
+* **FABIAn3RS** (13/07/2026 03:12): implementacion stripe
+* **FABIAn3RS** (13/07/2026 02:14): Merge branch 'master' of https://github.com/FABIAn3RS/PROYECTO-F1
+* **FABIAn3RS** (13/07/2026 02:14): sega
+* **Fabi├ín Rezabala** (13/07/2026 02:07): Update cloudbuild.yaml
+* **Fabi├ín Rezabala** (13/07/2026 02:07): Update Dockerfile
+* **FABIAn3RS** (13/07/2026 01:56): 4K
+* **Fabi├ín Rezabala** (13/07/2026 01:45): Update cloudbuild.yaml
+* **Fabi├ín Rezabala** (13/07/2026 01:42): Update cloudbuild.yaml
+* **Fabi├ín Rezabala** (13/07/2026 01:39): Create cloudbuild.yaml
+* **Fabi├ín Rezabala** (13/07/2026 01:12): Rename nginx.conf to nginx.conf.template
+* **Fabi├ín Rezabala** (13/07/2026 01:07): Update nginx.conf
+* **Fabi├ín Rezabala** (13/07/2026 01:07): Update Dockerfile
+* **FABIAn3RS** (12/07/2026 23:55): test nuevo pipeline
+* **FABIAn3RS** (12/07/2026 23:48): fix: update header title and Docker image tag for consistency
+* **Fabi├ín Rezabala** (12/07/2026 23:20): Create cloudbuild.yaml
+* **Fabi├ín Rezabala** (12/07/2026 23:17): Update nginx.conf
+* **Fabi├ín Rezabala** (12/07/2026 23:16): Update Dockerfile
+* **FABIAn3RS** (12/07/2026 23:06): Commit de prueba vac├¡o
+* **FABIAn3RS** (12/07/2026 23:03): fix: update header title to enhance user engagement
+* **FABIAn3RS** (12/07/2026 22:59): refactor: update nginx configuration to use fixed port and improve cache headers
+* **FABIAn3RS** (12/07/2026 22:25): mejora interfaz
+* **FABIAn3RS** (12/07/2026 21:24): actualizacion
+* **FABIAn3RS** (12/07/2026 18:25): test: confirmar CI/CD funcionando
+* **FABIAn3RS** (12/07/2026 18:25): test: confirmar CI/CD funcionando
+* **FABIAn3RS** (12/07/2026 18:15): test: confirmar CI/CD funcionando
+* **FABIAn3RS** (12/07/2026 18:11): test: retry deploy 2
+* **FABIAn3RS** (12/07/2026 17:35): test: trigger CI/CD deploy
+* **Fabi├ín Rezabala** (12/07/2026 17:09): Add files via upload
+* **Fabi├ín Rezabala** (12/07/2026 17:09): Update and rename nginx.conf.template to nginx.conf
+* **Fabi├ín Rezabala** (12/07/2026 17:07): Refactor Dockerfile for improved clarity and functionality
+* **Fabi├ín Rezabala** (12/07/2026 17:02): Delete .github/workflows directory
+* **ElOscurito** (12/07/2026 14:55): Agregar ruta p├║blica para predicciones y actualizar navegaci├│n en Navbar + Plan MVP
+* **Xmarcelo-05** (12/07/2026 13:01):     - Backend:       - Creada tabla y modelo 'codigos_verificacion' para validacion de registro por correo.       - Agregado soporte para envio de emails mediante Resend en 'app/core/email.py'.       - Agregada integracion base para sesiones de identidad KYC mediante Didit en 'app/core/didit.py'.       - Implementado webhook de Didit '/users/webhooks/didit' para aprobacion/rechazo asincrono.       - Modificado login para restringir accesos a usuarios con correo verificado.       - Protegido el checkout de pase de temporada restringiendo compras si no se verifica telefono ni KYC.       - Agregado endpoint GET '/acceso/pase' para conocer el estado de la suscripcion.
+* **Fabi├ín Rezabala** (12/07/2026 03:37): Update deployment configuration for project ID and service
+* **Fabi├ín Rezabala** (12/07/2026 03:23): Update deploy.yaml
+* **Fabi├ín Rezabala** (12/07/2026 03:19): Update deploy.yaml
+* **Fabi├ín Rezabala** (12/07/2026 03:10): Update deploy.yaml
+* **Fabi├ín Rezabala** (12/07/2026 02:59): Change Docker build context in deploy workflow
+* **Fabi├ín Rezabala** (12/07/2026 02:57): Delete nginx.conf.template
+* **Fabi├ín Rezabala** (12/07/2026 02:57): Delete dockerfile
+* **Fabi├ín Rezabala** (12/07/2026 02:56): Create nginx.conf.template
+* **Fabi├ín Rezabala** (12/07/2026 02:55): Add Dockerfile for multi-stage build with Nginx
+* **Fabi├ín Rezabala** (12/07/2026 02:51): Update Cloud Run deployment workflow configuration
+* **Fabi├ín Rezabala** (12/07/2026 02:48): Create google-cloudrun-docker.yml
+* **Fabi├ín Rezabala** (12/07/2026 02:31): Update and rename nginx.conf to nginx.conf.template
+* **Fabi├ín Rezabala** (12/07/2026 02:29): Create nginx.conf
+* **Fabi├ín Rezabala** (12/07/2026 02:28): Create dockerfile
+* **FABIAn3RS** (11/07/2026 22:27): feat: add initial SQL scripts for database schema and seed data
+* **FABIAn3RS** (11/07/2026 22:26): cambios de funcionalidad al main
+* **FABIAn3RS** (11/07/2026 14:07): la api de obtencion de datos se movio al backend y ahora se sincroniza con la db directamente (el admin puede manipular esos datos aun y puede activar la sincronizacion manualmente)
+* **ElOscurito** (09/07/2026 09:33): feat(predicciones): implement prediction algorithms and CRUD operations
+* **JohandryViles** (09/07/2026 08:49): Integracion de API TheSportsDB
+* **Johandry Viles** (09/07/2026 06:42): feat: Cambio del nombre del Proyecto
+* **Fabi├ín Rezabala** (09/07/2026 01:39): Rename .env.example to .env
+* **ElOscurito** (09/07/2026 00:13): Doc quitado
+* **ElOscurito** (09/07/2026 00:10): Implementaci├│n del MVP por parte del frontend
+* **Johandry Viles** (07/07/2026 21:24): Update: Cambio del Stack del Proyecto
+* **Leandro Veliz Ponce** (06/07/2026 12:35): Actualizaci├│n del contexto del sistema y las descripciones de los contenedores.
+* **JoseAndresBruh** (06/07/2026 09:24): Fix formatting issue in README.md
+* **JoseAndresBruh** (06/07/2026 09:21): Fix formatting in README.md class diagram
+* **JoseAndresBruh** (06/07/2026 09:19): Update README with domain model diagram
+* **Johandry Viles** (05/07/2026 22:23): Flujo-Usuario-Admin
+* **Leandro Veliz Ponce** (05/07/2026 22:00): Estructura del proyecto
+* **Leandro Veliz Ponce** (05/07/2026 21:47): Diamagrama Arquitectonico
+* **FABIAn3RS** (01/07/2026 22:58): feat: initialize Angular application with basic structure and routing
+* **FABIAn3RS** (01/07/2026 22:26): framework
