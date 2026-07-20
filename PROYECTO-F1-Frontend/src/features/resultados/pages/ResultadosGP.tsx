@@ -79,6 +79,9 @@ export default function ResultadosGP() {
                   <div className="podio__medalla" aria-hidden="true">
                     {pos.posicion === 1 ? '🥇' : pos.posicion === 2 ? '🥈' : '🥉'}
                   </div>
+                  <div className="podio__lugar" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '0.25rem', marginBottom: '0.5rem' }}>
+                    {pos.posicion === 1 ? 'Primer lugar' : pos.posicion === 2 ? 'Segundo lugar' : 'Tercer lugar'}
+                  </div>
                   <p style={{ fontWeight: 700 }}>{pos.piloto?.nombre ?? 'Desconocido'}</p>
                   <p className="text-muted">
                     {pos.es_pole && 'Pole · '}
