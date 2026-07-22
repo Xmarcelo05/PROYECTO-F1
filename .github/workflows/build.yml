@@ -39,8 +39,8 @@ jobs:
           POSTGRES_PASSWORD: dummy_test_password
         run: |
           cd PROYECTO-F1-Backend
-          pip install --only-binary :all: --require-hashes -r requirements.txt
-          python -m pytest --cov=app --cov-report=xml
+          pip install --only-binary :all: --require-hashes -r requirements.txt > pip_install.log 2>&1 || (cat pip_install.log && exit 1)
+          python -m pytest --cov=app --cov-report=xml > pytest.log 2>&1 || (cat pytest.log && exit 1)
 
       # 3. Ejecutar escaneo de SonarQube
       - name: SonarQube Scan
