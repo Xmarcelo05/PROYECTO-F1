@@ -38,7 +38,7 @@ jobs:
         run: |
           cd PROYECTO-F1-Backend
           pip install -r requirements.txt
-          pytest --cov=app --cov-report=xml
+          python -m pytest --cov=app --cov-report=xml
 
       # 3. Ejecutar escaneo de SonarQube
       - name: SonarQube Scan
