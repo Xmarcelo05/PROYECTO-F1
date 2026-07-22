@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.11-slim
 
 # Create a non-root user to run the application securely
 RUN groupadd -g 1000 appuser && \
