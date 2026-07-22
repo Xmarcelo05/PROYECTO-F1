@@ -47,3 +47,13 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # 4. Upload debug logs if any step fails
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs
+          path: |
+            PROYECTO-F1-Backend/pip_install.log
+            PROYECTO-F1-Backend/pytest.log
