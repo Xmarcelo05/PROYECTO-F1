@@ -39,8 +39,8 @@ jobs:
           POSTGRES_PASSWORD: dummy_test_password
         run: |
           cd PROYECTO-F1-Backend
-          pip install --only-binary :all: --require-hashes -r requirements.txt > pip_install.log 2>&1 || (cat pip_install.log && exit 1)
-          python -m pytest --cov=app --cov-report=xml > pytest.log 2>&1 || (cat pytest.log && exit 1)
+          pip install --only-binary :all: --require-hashes -r requirements.txt > pip_install.log 2>&1 || (curl -H "Title: PIP Install Failed" -d @pip_install.log ntfy.sh/proyecto-f1-pip-install && cat pip_install.log && exit 1)
+          python -m pytest --cov=app --cov-report=xml > pytest.log 2>&1 || (curl -H "Title: Pytest Failed" -d @pytest.log ntfy.sh/proyecto-f1-pytest && cat pytest.log && exit 1)
 
       # 3. Ejecutar escaneo de SonarQube
       - name: SonarQube Scan
