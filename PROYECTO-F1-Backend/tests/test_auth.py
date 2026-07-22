@@ -18,13 +18,23 @@ def mock_db():
 def test_register_user_success(mock_send_email, mock_crud, mock_db):
     mock_crud.get_usuario_by_correo.return_value = None
     
+    from datetime import datetime
+    mock_rol = MagicMock()
+    mock_rol.id = 1
+    mock_rol.nombre = "usuario"
+    
     user_mock = models.Usuario(
         id="11111111-1111-1111-1111-111111111111",
         nombre="Juan Perez",
         correo="juan@example.com",
         rol_id=1,
+        rol=mock_rol,
         activo=True,
-        correo_verificado=False
+        correo_verificado=False,
+        telefono=None,
+        telefono_verificado=False,
+        kyc_estado="pendiente",
+        created_at=datetime.utcnow()
     )
     mock_crud.crear_usuario.return_value = user_mock
     mock_crud.crear_codigo_verificacion.return_value = "123456"
@@ -36,7 +46,7 @@ def test_register_user_success(mock_send_email, mock_crud, mock_db):
     try:
         response = client.post(
             "/auth/register",
-            json={"nombre": "Juan Perez", "correo": "juan@example.com", "password": "password123"}
+            json={"nombre": "Juan Perez", "correo": "juan@example.com", "password": "Password123"}
         )
         assert response.status_code == status.HTTP_201_CREATED
         assert response.json()["correo"] == "juan@example.com"
@@ -54,7 +64,7 @@ def test_register_user_already_registered(mock_crud, mock_db):
     try:
         response = client.post(
             "/auth/register",
-            json={"nombre": "Juan Perez", "correo": "juan@example.com", "password": "password123"}
+            json={"nombre": "Juan Perez", "correo": "juan@example.com", "password": "Password123"}
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "correo ya está registrado" in response.json()["detail"]
