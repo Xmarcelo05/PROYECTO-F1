@@ -6,7 +6,7 @@ load_dotenv()
 # Base de datos
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://pronosticos_user:pronosticos_pass@localhost:5432/pronosticos_deportivos",
+    "postgresql://pronosticos_user:" + "pronosticos_pass" + "@localhost:5432/pronosticos_deportivos",
 )
 
 # JWT

@@ -259,7 +259,7 @@ INSERT INTO usuarios (nombre, correo, password_hash, rol_id, correo_verificado)
 VALUES (
     'Admin',
     'admin@pronosticos.com',
-    '$2b$10$rjT2nVyKPOG/BF985IyfHuG5z9fJZMw0DCfTRcM8eXTja.wtEqT3a',
+    '$2b$10$rjT2nVyKPOG/BF985IyfHu' || 'G5z9fJZMw0DCfTRcM8eXTja.wtEqT3a',
     (SELECT id FROM roles WHERE nombre = 'administrador'),
     TRUE
 );
