@@ -24,7 +24,7 @@ jobs:
       - name: Install Frontend deps & run tests
         run: |
           cd PROYECTO-F1-Frontend
-          npm ci
+          npm ci --ignore-scripts
           npm run test
 
       # 2. Configurar Python y ejecutar pruebas de Backend (Genera coverage.xml)
@@ -39,7 +39,7 @@ jobs:
           POSTGRES_PASSWORD: dummy_test_password
         run: |
           cd PROYECTO-F1-Backend
-          pip install -r requirements.txt
+          pip install --only-binary :all: -r requirements.txt
           python -m pytest --cov=app --cov-report=xml
 
       # 3. Ejecutar escaneo de SonarQube

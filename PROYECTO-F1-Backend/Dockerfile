@@ -1,11 +1,19 @@
 FROM python:3.12-slim
 
+# Create a non-root user to run the application securely
+RUN groupadd -g 1000 appuser && \
+    useradd -r -u 1000 -g appuser appuser
+
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Use --only-binary :all: to prevent the execution of arbitrary setup scripts during package installation
+RUN pip install --no-cache-dir --only-binary :all: -r requirements.txt
 
 COPY app ./app
+RUN chown -R appuser:appuser /app
+
+USER appuser
 
 EXPOSE 8000
 
