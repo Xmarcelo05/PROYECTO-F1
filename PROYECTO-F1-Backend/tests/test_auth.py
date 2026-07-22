@@ -170,3 +170,16 @@ def test_forgot_password(mock_send_email, mock_crud, mock_db):
         mock_send_email.assert_called_once_with("juan@example.com", "reset_token_123")
     finally:
         app.dependency_overrides.clear()
+
+
+def test_crear_codigo_verificacion_real(mock_db):
+    from app.modules.auth.crud import crear_codigo_verificacion
+    usuario_id = "11111111-1111-1111-1111-111111111111"
+    
+    # We call the real function to execute the new code line containing secrets.choice
+    codigo = crear_codigo_verificacion(mock_db, usuario_id)
+    
+    assert len(codigo) == 6
+    assert codigo.isdigit()
+    assert mock_db.add.called
+    assert mock_db.commit.called
