@@ -35,6 +35,8 @@ jobs:
           cache: 'pip'
           cache-dependency-path: 'PROYECTO-F1-Backend/requirements.txt'
       - name: Install Backend deps & run tests
+        env:
+          POSTGRES_PASSWORD: dummy_test_password
         run: |
           cd PROYECTO-F1-Backend
           pip install -r requirements.txt
